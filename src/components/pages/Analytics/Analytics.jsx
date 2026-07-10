@@ -5,7 +5,7 @@ import { formatCurrency, formatPercent } from '../../../utils';
 const { Title } = Typography;
 
 export default function Analytics() {
-  const { assets } = useCrypto();
+  const { assets, transactions } = useCrypto();
 
   const totalInvested = assets.reduce(
     (sum, asset) => sum + (asset.amount * asset.price || 0),
@@ -19,6 +19,18 @@ export default function Analytics() {
     (sum, asset) => sum + (asset.totalProfit || 0),
     0,
   );
+  
+  // Calculate realized profit from SELL transactions
+  const realizedProfit = transactions
+    .filter((tx) => tx.type === 'SELL')
+    .reduce((sum, tx) => sum + (tx.profit || 0), 0);
+  
+  // Unrealized profit is current portfolio profit
+  const unrealizedProfit = totalProfit;
+  
+  // Total profit includes both realized and unrealized
+  const overallProfit = realizedProfit + unrealizedProfit;
+  
   const roi = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0;
 
   const bestPerformer = assets.length > 0
@@ -97,22 +109,55 @@ export default function Analytics() {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Total Profit"
-              value={totalProfit}
+              title="Realized Profit"
+              value={realizedProfit}
               precision={2}
               prefix="$"
-              valueStyle={{ color: totalProfit >= 0 ? '#3f8600' : '#cf1322' }}
+              styles={{
+                content: { color: realizedProfit >= 0 ? '#3f8600' : '#cf1322' }
+              }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
+              title="Unrealized Profit"
+              value={unrealizedProfit}
+              precision={2}
+              prefix="$"
+              styles={{
+                content: { color: unrealizedProfit >= 0 ? '#3f8600' : '#cf1322' }
+              }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12}>
+          <Card>
+            <Statistic
+              title="Overall Profit"
+              value={overallProfit}
+              precision={2}
+              prefix="$"
+              styles={{
+                content: { color: overallProfit >= 0 ? '#3f8600' : '#cf1322', fontSize: '28px' }
+              }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Card>
+            <Statistic
               title="ROI"
               value={roi}
               precision={2}
               suffix="%"
-              valueStyle={{ color: roi >= 0 ? '#3f8600' : '#cf1322' }}
+              styles={{
+                content: { color: roi >= 0 ? '#3f8600' : '#cf1322', fontSize: '28px' }
+              }}
             />
           </Card>
         </Col>
@@ -128,7 +173,9 @@ export default function Analytics() {
                   value={bestPerformer.growPercent || 0}
                   precision={2}
                   suffix="%"
-                  valueStyle={{ color: '#3f8600', fontSize: '32px' }}
+                  styles={{
+                    content: { color: '#3f8600', fontSize: '32px' }
+                  }}
                 />
               </div>
             ) : (
@@ -145,7 +192,9 @@ export default function Analytics() {
                   value={worstPerformer.growPercent || 0}
                   precision={2}
                   suffix="%"
-                  valueStyle={{ color: '#cf1322', fontSize: '32px' }}
+                  styles={{
+                    content: { color: '#cf1322', fontSize: '32px' }
+                  }}
                 />
               </div>
             ) : (

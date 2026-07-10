@@ -1,6 +1,6 @@
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
-import { Typography, List, Avatar } from 'antd';
+import { Typography, Avatar } from 'antd';
 
 const { Title, Text } = Typography;
 
@@ -23,21 +23,24 @@ export default function CoinInfo() {
   return (
     <div>
       <Title level={5}>Top coins</Title>
-      <List
-        itemLayout="horizontal"
-        dataSource={topCoins}
-        renderItem={(coin) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={coin.icon} />}
-              title={coin.name}
-              description={
-                <Text type="secondary">${coin.price.toFixed(2)}</Text>
-              }
-            />
-          </List.Item>
-        )}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {topCoins.map((coin) => (
+          <div
+            key={coin.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '8px 0',
+            }}>
+            <Avatar src={coin.icon} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 500 }}>{coin.name}</div>
+              <Text type="secondary">${coin.price.toFixed(2)}</Text>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

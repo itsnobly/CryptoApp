@@ -37,9 +37,14 @@ export default function CryptoProvider({ children }) {
           const currentPrice = parseFloat(coin.price) || 0;
           const amount = parseFloat(asset.amount) || 0;
           
-          const growPercent = percentDifference(buyPrice, currentPrice);
-          const totalAmount = amount * currentPrice;
-          const totalProfit = totalAmount - amount * buyPrice;
+          const invested = amount * buyPrice;
+          const currentValue = amount * currentPrice;
+          const totalProfit = currentValue - invested;
+          
+          // Calculate profit percentage: ((current - invested) / invested) * 100
+          const growPercent = invested > 0 ? ((currentValue - invested) / invested) * 100 : 0;
+          
+          const totalAmount = currentValue;
 
           return {
             ...asset,
@@ -48,7 +53,7 @@ export default function CryptoProvider({ children }) {
             icon: coin.icon,
             price: buyPrice,
             amount,
-            grow: buyPrice < currentPrice,
+            grow: totalProfit > 0,
             growPercent,
             totalAmount,
             totalProfit,
@@ -66,6 +71,13 @@ export default function CryptoProvider({ children }) {
 
   useEffect(() => {
     preloadData();
+    
+    // Auto-refresh prices every 60 seconds
+    const interval = setInterval(() => {
+      preloadData();
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -88,9 +100,10 @@ export default function CryptoProvider({ children }) {
         
         const coin = crypto.find((c) => c.id === newAsset.id);
         const currentPrice = coin?.price || newAsset.currentPrice || newAsset.price;
-        const totalAmountValue = totalAmount * currentPrice;
-        const totalProfit = totalAmountValue - totalAmount * avgPrice;
-        const growPercent = percentDifference(avgPrice, currentPrice);
+        const invested = totalAmount * avgPrice;
+        const currentValue = totalAmount * currentPrice;
+        const totalProfit = currentValue - invested;
+        const growPercent = invested > 0 ? ((currentValue - invested) / invested) * 100 : 0;
         
         return prev.map((a, index) =>
           index === existingIndex
@@ -99,10 +112,10 @@ export default function CryptoProvider({ children }) {
                 amount: totalAmount,
                 price: avgPrice,
                 date: new Date(),
-                totalAmount: totalAmountValue,
+                totalAmount: currentValue,
                 totalProfit,
                 currentPrice,
-                grow: avgPrice < currentPrice,
+                grow: totalProfit > 0,
                 growPercent,
                 name: coin?.name || a.name,
                 symbol: coin?.symbol || a.symbol,
@@ -115,9 +128,10 @@ export default function CryptoProvider({ children }) {
       // New asset - ensure it has enriched data
       const coin = crypto.find((c) => c.id === newAsset.id);
       const currentPrice = coin?.price || newAsset.currentPrice || newAsset.price;
-      const totalAmountValue = newAsset.amount * currentPrice;
-      const totalProfit = totalAmountValue - newAsset.amount * newAsset.price;
-      const growPercent = percentDifference(newAsset.price, currentPrice);
+      const invested = newAsset.amount * newAsset.price;
+      const currentValue = newAsset.amount * currentPrice;
+      const totalProfit = currentValue - invested;
+      const growPercent = invested > 0 ? ((currentValue - invested) / invested) * 100 : 0;
       
       return [
         ...prev,
@@ -126,10 +140,10 @@ export default function CryptoProvider({ children }) {
           name: newAsset.name || coin?.name,
           symbol: newAsset.symbol || coin?.symbol,
           icon: newAsset.icon || coin?.icon,
-          totalAmount: totalAmountValue,
+          totalAmount: currentValue,
           totalProfit,
           currentPrice,
-          grow: newAsset.price < currentPrice,
+          grow: totalProfit > 0,
           growPercent,
         },
       ];
@@ -202,17 +216,18 @@ export default function CryptoProvider({ children }) {
           const amount = updates.amount !== undefined ? updates.amount : asset.amount;
           const price = updates.price !== undefined ? updates.price : asset.price;
           
-          const totalAmountValue = amount * currentPrice;
-          const totalProfit = totalAmountValue - amount * price;
-          const growPercent = percentDifference(price, currentPrice);
+          const invested = amount * price;
+          const currentValue = amount * currentPrice;
+          const totalProfit = currentValue - invested;
+          const growPercent = invested > 0 ? ((currentValue - invested) / invested) * 100 : 0;
           
           return {
             ...asset,
             ...updates,
-            totalAmount: totalAmountValue,
+            totalAmount: currentValue,
             totalProfit,
             currentPrice,
-            grow: price < currentPrice,
+            grow: totalProfit > 0,
             growPercent,
           };
         }

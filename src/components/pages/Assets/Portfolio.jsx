@@ -1,8 +1,9 @@
-import { Table, Tag, Typography, Button, Space, Popconfirm, Input } from 'antd';
-import { EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Table, Tag, Typography, Button, Space, Popconfirm, Input, Modal } from 'antd';
+import { EditOutlined, DeleteOutlined, SearchOutlined, DollarOutlined } from '@ant-design/icons';
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
 import { useState } from 'react';
+import SellAssetsForm from '../../UI/SellAssetsForm';
 
 const { Text } = Typography;
 
@@ -11,6 +12,7 @@ export default function Portfolio() {
   const { showMarketPrices } = useSettings();
   const [searchText, setSearchText] = useState('');
   const [editingAsset, setEditingAsset] = useState(null);
+  const [sellingAsset, setSellingAsset] = useState(null);
 
   const handleDelete = (assetId) => {
     removeAsset(assetId);
@@ -132,6 +134,11 @@ export default function Portfolio() {
               icon={<EditOutlined />}
               onClick={() => handleEdit(record)}
             />
+            <Button
+              size="small"
+              icon={<DollarOutlined />}
+              onClick={() => setSellingAsset(record)}
+            />
             <Popconfirm
               title="Delete this asset?"
               description="This action cannot be undone."
@@ -176,6 +183,20 @@ export default function Portfolio() {
         scroll={{ x: 800, y: 400 }}
         rowKey="key"
       />
+      
+      <Modal
+        title={`Sell ${sellingAsset?.name || ''}`}
+        open={!!sellingAsset}
+        onCancel={() => setSellingAsset(null)}
+        footer={null}
+        width={500}>
+        {sellingAsset && (
+          <SellAssetsForm
+            asset={sellingAsset}
+            onClose={() => setSellingAsset(null)}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

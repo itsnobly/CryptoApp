@@ -1,4 +1,4 @@
-import { Card, Statistic, Typography, List, Tag, Pagination } from 'antd';
+import { Card, Statistic, Typography, Tag, Pagination } from 'antd';
 import { useContext, useState, useEffect } from 'react';
 import { CryptoContext } from '../../context/crypto-context';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
@@ -46,42 +46,35 @@ export default function CardContent() {
               title={capitalize(asset.name)}
               value={asset.totalAmount}
               precision={2}
-              style={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
+              styles={{
+                content: { color: asset.grow ? '#3f8600' : '#cf1322' }
+              }}
             />
 
-            <List
-              size="small"
-              dataSource={[
-                { title: 'Total Profit', value: asset.totalProfit, withTag: true },
-                { title: 'Asset Amount', value: asset.amount, isPlain: true },
-                { title: 'Difference', value: asset.growPercent },
-              ]}
-              renderItem={(item) => (
-                <List.Item>
-                  <Text>{item.title}</Text>
-                  <span>
-                    {item.withTag && (
-                      <Tag color={asset.grow ? 'green' : 'red'}>
-                        {asset.growPercent}%
-                      </Tag>
-                    )}
-                    {item.isPlain ? (
-                      <Text type={asset.grow ? 'success' : 'danger'}>
-                        {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
-                        {Number(item.value).toFixed(2)}
-                      </Text>
-                    ) : item.title === 'Difference' ? (
-                      <Text type={asset.grow ? 'success' : 'danger'}>
-                        {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
-                        {Number(item.value).toFixed(2)}%
-                      </Text>
-                    ) : (
-                      <Text>{Number(item.value).toFixed(2)}$</Text>
-                    )}
-                  </span>
-                </List.Item>
-              )}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Text type="secondary">Total Profit</Text>
+                <span>
+                  <Tag color={asset.grow ? 'green' : 'red'}>
+                    {asset.growPercent}%
+                  </Tag>
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Text type="secondary">Asset Amount</Text>
+                <Text type={asset.grow ? 'success' : 'danger'}>
+                  {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
+                  {Number(asset.amount).toFixed(2)}
+                </Text>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Text type="secondary">Difference</Text>
+                <Text type={asset.grow ? 'success' : 'danger'}>
+                  {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
+                  {Number(asset.growPercent).toFixed(2)}%
+                </Text>
+              </div>
+            </div>
           </Card>
         ))}
       </div>
