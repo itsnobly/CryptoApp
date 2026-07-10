@@ -1,6 +1,6 @@
 import { Row, Col, Typography, Card, Empty } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import Portfolio from './Portfolio';
 import CoinInfo from './CoinInfo';
 

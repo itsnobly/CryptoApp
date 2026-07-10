@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-
+import { useState } from 'react';
+import { LanguageContext } from './language-context';
 const translations = {
   en: {
     sidebar: {
@@ -10,11 +10,50 @@ const translations = {
       watchlist: 'Watchlist',
       settings: 'Settings',
     },
+
     header: {
       selectCoin: 'Select coin',
       addAssets: 'Add Assets',
       add: 'Add',
     },
+
+    assets: {
+      title: 'Assets',
+      noAssets: 'No assets',
+    },
+
+    watchlist: {
+      title: 'Watchlist',
+      yourWatchlist: 'Your Watchlist',
+      allCoins: 'All Coins',
+      coin: 'Coin',
+      symbol: 'Symbol',
+      price: 'Price',
+      change24h: '24h Change',
+      addToWatchlist: 'Add to Watchlist',
+      searchCoins: 'Search coins',
+      noCoins: 'No coins in watchlist',
+    },
+
+    history: {
+      title: 'Transaction History',
+      all: 'All Transactions',
+      date: 'Date',
+      type: 'Type',
+      coin: 'Coin',
+      amount: 'Amount',
+      price: 'Price',
+      total: 'Total',
+      profit: 'Profit',
+      buy: 'BUY',
+      sell: 'SELL',
+      search: 'Search transaction',
+      noTransactions: 'No transactions',
+      of: 'of',
+      transactions: 'transactions',
+      perPage: '/ page',
+    },
+
     dashboard: {
       totalPortfolio: 'Total Portfolio',
       totalProfit: 'Total Profit',
@@ -30,7 +69,7 @@ const translations = {
       gainers: 'Gainers',
       losers: 'Losers',
       invested: 'Invested',
-      roi: 'ROI',
+      roi: 'Доходность',
       analytics: 'Analytics',
       totalInvested: 'Total Invested',
       currentValue: 'Current Value',
@@ -39,92 +78,74 @@ const translations = {
       overallProfit: 'Overall Profit',
       performanceByAsset: 'Performance by Asset',
     },
-    assets: {
-      title: 'Assets',
-      search: 'Search assets...',
-      noAssets: 'No assets yet. Add your first asset to get started.',
-      edit: 'Edit',
-      sell: 'Sell',
-      delete: 'Delete',
-    },
-    history: {
-      title: 'Transaction History',
-      search: 'Search transactions...',
-      type: 'Type',
-      coin: 'Coin',
-      amount: 'Amount',
-      price: 'Price',
-      total: 'Total',
-      date: 'Date',
-      noTransactions: 'No transactions yet.',
-      all: 'All',
-    },
-    watchlist: {
-      title: 'Watchlist',
-      yourWatchlist: 'Your Watchlist',
-      noCoins: 'No coins in watchlist. Add coins from the list below.',
-      allCoins: 'All Coins',
-      searchCoins: 'Search coins...',
-      coin: 'Coin',
+
+    coinInfo: {
+      currentPrice: 'Current Price',
+      change1h: 'Change 1h',
+      change24h: 'Change 24h',
+      change7d: 'Change 7d',
+      marketCap: 'Market Cap',
+      volume24h: 'Volume 24h',
+      availableSupply: 'Available Supply',
+      totalSupply: 'Total Supply',
+      rank: 'Rank',
       symbol: 'Symbol',
-      price: 'Price',
-      change24h: '24h Change',
-      addToWatchlist: 'Add to watchlist',
+      officialWebsite: 'Official Website',
     },
+
     settings: {
       title: 'Settings',
       darkMode: 'Dark Mode',
       showMarketPrices: 'Show Market Prices',
       language: 'Language',
     },
-    addAsset: {
-      title: 'Add Assets',
-      selectCoin: 'Select coin',
-      amount: 'Amount',
-      buyPrice: 'Buy price (optional)',
-      buyPriceTooltip: 'If left empty, current market price will be used',
-      date: 'Date',
-      total: 'Total',
-      submit: 'Add Asset',
-      amountRequired: 'Amount is required',
-      amountPositive: 'Amount must be greater than 0',
-      pricePositive: 'Price must be greater than 0',
-      dateRequired: 'Date required',
-      changeCoin: 'Change',
-    },
-    sellAsset: {
-      title: 'Sell Asset',
-      sellAmount: 'Sell Amount',
-      sellPrice: 'Sell Price ($)',
-      date: 'Date',
-      submit: 'Sell',
-      amountRequired: 'Please enter amount',
-      amountRange: 'Amount must be between',
-      priceRequired: 'Please enter price',
-      priceMin: 'Price must be at least $0.01',
-      dateRequired: 'Please select date',
-    },
+
     common: {
       loading: 'Loading...',
       error: 'Error',
       save: 'Save',
       cancel: 'Cancel',
       close: 'Close',
-      coin: 'Coin',
-      available: 'Available',
-      currentPrice: 'Current Price',
-      currentValue: 'Current Value',
       profit: 'Profit',
-      actions: 'Actions',
-      name: 'Name',
-      buyPrice: 'Buy Price',
       totalValue: 'Total Value',
       invested: 'Invested',
-      roi: 'ROI',
-      topCoins: 'Top coins',
-      marketPricesHidden: 'Market prices are hidden. Enable in Settings.',
+      roi: 'Доходность',
+      name: 'Name',
+      actions: 'Actions',
+      buyPrice: 'Buy Price',
+      currentPrice: 'Current Price',
+      coin: 'Coin',
+      topCoins: 'Top Coins',
+    },
+
+    addAsset: {
+      title: 'Add Asset',
+      selectCoin: 'Select Coin',
+      amount: 'Amount',
+      amountRequired: 'Amount is required',
+      amountPositive: 'Amount must be positive',
+      buyPrice: 'Buy Price',
+      buyPriceTooltip: 'Leave empty to use current market price',
+      pricePositive: 'Price must be positive',
+      date: 'Date',
+      selectDate: 'Select date',
+      dateRequired: 'Date is required',
+      total: 'Total',
+      submit: 'Add Asset',
+      changeCoin: 'Change',
+      marketPrice: 'Market price',
+      priceUsed: 'If price not entered, market price used',
+      buyPriceText: 'Buy price',
+    },
+
+    assetResult: {
+      title: 'Asset Added',
+      added: 'Added',
+      price: 'at price',
+      again: 'Add Again',
     },
   },
+
   ru: {
     sidebar: {
       dashboard: 'Дашборд',
@@ -134,11 +155,50 @@ const translations = {
       watchlist: 'Избранное',
       settings: 'Настройки',
     },
+
     header: {
       selectCoin: 'Выберите монету',
       addAssets: 'Добавить активы',
       add: 'Добавить',
     },
+
+    assets: {
+      title: 'Активы',
+      noAssets: 'Нет активов',
+    },
+
+    watchlist: {
+      title: 'Избранные монеты',
+      yourWatchlist: 'Ваш список монет',
+      allCoins: 'Все монеты',
+      coin: 'Монета',
+      symbol: 'Символ',
+      price: 'Цена',
+      change24h: 'Изменение за 24ч',
+      addToWatchlist: 'Добавить в избранное',
+      searchCoins: 'Поиск монет',
+      noCoins: 'Нет избранных монет',
+    },
+
+    history: {
+      title: 'История операций',
+      all: 'Все операции',
+      date: 'Дата',
+      type: 'Тип',
+      coin: 'Монета',
+      amount: 'Количество',
+      price: 'Цена',
+      total: 'Сумма',
+      profit: 'Прибыль',
+      buy: 'Покупка',
+      sell: 'Продажа',
+      search: 'Поиск операции',
+      noTransactions: 'Нет операций',
+      of: 'из',
+      transactions: 'операций',
+      perPage: '/ стр.',
+    },
+
     dashboard: {
       totalPortfolio: 'Общий портфель',
       totalProfit: 'Общая прибыль',
@@ -154,7 +214,7 @@ const translations = {
       gainers: 'Растущие',
       losers: 'Падающие',
       invested: 'Инвестировано',
-      roi: 'ROI',
+      roi: 'Доходность',
       analytics: 'Аналитика',
       totalInvested: 'Всего инвестировано',
       currentValue: 'Текущая стоимость',
@@ -163,101 +223,79 @@ const translations = {
       overallProfit: 'Общая прибыль',
       performanceByAsset: 'Производительность активов',
     },
-    assets: {
-      title: 'Активы',
-      search: 'Поиск активов...',
-      noAssets: 'Активов пока нет. Добавьте первый актив для начала.',
-      edit: 'Редактировать',
-      sell: 'Продать',
-      delete: 'Удалить',
-    },
-    history: {
-      title: 'История транзакций',
-      search: 'Поиск транзакций...',
-      type: 'Тип',
-      coin: 'Монета',
-      amount: 'Количество',
-      price: 'Цена',
-      total: 'Всего',
-      date: 'Дата',
-      noTransactions: 'Транзакций пока нет.',
-      all: 'Все',
-    },
-    watchlist: {
-      title: 'Избранное',
-      yourWatchlist: 'Ваш список избранного',
-      noCoins: 'В избранном нет монет. Добавьте монеты из списка ниже.',
-      allCoins: 'Все монеты',
-      searchCoins: 'Поиск монет...',
-      coin: 'Монета',
+
+    coinInfo: {
+      currentPrice: 'Текущая цена',
+      change1h: 'Изменение за 1ч',
+      change24h: 'Изменение за 24ч',
+      change7d: 'Изменение за 7д',
+      marketCap: 'Рыночная капитализация',
+      volume24h: 'Объём за 24ч',
+      availableSupply: 'Доступное предложение',
+      totalSupply: 'Общее предложение',
+      rank: 'Ранг',
       symbol: 'Символ',
-      price: 'Цена',
-      change24h: 'Изм. за 24ч',
-      addToWatchlist: ' В избранное',
+      officialWebsite: 'Официальный сайт',
     },
+
     settings: {
       title: 'Настройки',
       darkMode: 'Темная тема',
       showMarketPrices: 'Показывать рыночные цены',
       language: 'Язык',
     },
-    addAsset: {
-      title: 'Добавить активы',
-      selectCoin: 'Выберите монету',
-      amount: 'Количество',
-      buyPrice: 'Цена покупки (опционально)',
-      buyPriceTooltip:
-        'Если оставить пустым, будет использована текущая рыночная цена',
-      date: 'Дата',
-      total: 'Всего',
-      submit: 'Добавить актив',
-      amountRequired: 'Количество обязательно',
-      amountPositive: 'Количество должно быть больше 0',
-      pricePositive: 'Цена должна быть больше 0',
-      dateRequired: 'Дата обязательна',
-      changeCoin: 'Изменить',
-    },
-    sellAsset: {
-      title: 'Продать актив',
-      sellAmount: 'Количество для продажи',
-      sellPrice: 'Цена продажи ($)',
-      date: 'Дата',
-      submit: 'Продать',
-      amountRequired: 'Пожалуйста, введите количество',
-      amountRange: 'Количество должно быть между',
-      priceRequired: 'Пожалуйста, введите цену',
-      priceMin: 'Цена должна быть минимум $0.01',
-      dateRequired: 'Пожалуйста, выберите дату',
-    },
+
     common: {
       loading: 'Загрузка...',
       error: 'Ошибка',
       save: 'Сохранить',
       cancel: 'Отмена',
       close: 'Закрыть',
-      coin: 'Монета',
-      available: 'Доступно',
-      currentPrice: 'Текущая цена',
-      currentValue: 'Текущая стоимость',
       profit: 'Прибыль',
-      actions: 'Действия',
-      name: 'Название',
-      buyPrice: 'Цена покупки',
       totalValue: 'Общая стоимость',
       invested: 'Инвестировано',
-      roi: 'ROI',
+      roi: 'Доходность',
+      name: 'Название',
+      actions: 'Действия',
+      buyPrice: 'Цена покупки',
+      currentPrice: 'Текущая цена',
+      coin: 'Монета',
       topCoins: 'Топ монет',
-      marketPricesHidden: 'Рыночные цены скрыты. Включите в Настройках.',
+    },
+
+    addAsset: {
+      title: 'Добавить актив',
+      selectCoin: 'Выберите монету',
+      amount: 'Количество',
+      amountRequired: 'Количество обязательно',
+      amountPositive: 'Количество должно быть положительным',
+      buyPrice: 'Цена покупки',
+      buyPriceTooltip:
+        'Если оставить пустым, будет использована текущая рыночная цена',
+      pricePositive: 'Цена должна быть положительной',
+      date: 'Дата',
+      selectDate: 'Выберите дату',
+      dateRequired: 'Дата обязательна',
+      total: 'Всего',
+      submit: 'Добавить актив',
+      changeCoin: 'Изменить',
+      marketPrice: 'Рыночная цена',
+      priceUsed: 'Если цена не указана, используется рыночная цена',
+      buyPriceText: 'Цена покупки',
+    },
+
+    assetResult: {
+      title: 'Актив добавлен',
+      added: 'Добавлено',
+      price: 'по цене',
+      again: 'Добавить ещё',
     },
   },
 };
 
-const LanguageContext = createContext();
-
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem('language');
-    return saved || 'en';
+    return localStorage.getItem('language') || 'en';
   });
 
   const changeLanguage = (lang) => {
@@ -267,24 +305,24 @@ export function LanguageProvider({ children }) {
 
   const t = (key) => {
     const keys = key.split('.');
+
     let value = translations[language];
-    for (const k of keys) {
-      value = value?.[k];
+
+    for (const item of keys) {
+      value = value?.[item];
     }
+
     return value || key;
   };
 
   return (
-    <LanguageContext.Provider value={{ language, changeLanguage, t }}>
+    <LanguageContext.Provider
+      value={{
+        language,
+        changeLanguage,
+        t,
+      }}>
       {children}
     </LanguageContext.Provider>
   );
-}
-
-export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
-  }
-  return context;
 }

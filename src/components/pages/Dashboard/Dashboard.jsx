@@ -5,7 +5,7 @@ import Statistics from './Statistics';
 import Cards from './Cards';
 import AnalyticsCards from './AnalyticsCards';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 
 const { Title } = Typography;
 
@@ -22,7 +22,7 @@ export default function Dashboard() {
     );
   }
 
-  if (assets.length === 0) {
+  if (!assets || assets.length === 0) {
     return (
       <div className="page-container">
         <Title level={3}>{t('sidebar.dashboard')}</Title>

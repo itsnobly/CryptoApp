@@ -1,6 +1,6 @@
 import { Statistic, Row, Col, Card } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 
 export default function Statistics() {
   const { assets } = useCrypto();
@@ -14,12 +14,22 @@ export default function Statistics() {
     <Row gutter={[12, 12]}>
       <Col xs={12} sm={12}>
         <Card>
-          <Statistic title={t('dashboard.totalPortfolio')} value={total} precision={2} suffix="$" />
+          <Statistic
+            title={t('dashboard.totalPortfolio')}
+            value={total}
+            precision={2}
+            suffix="$"
+          />
         </Card>
       </Col>
       <Col xs={12} sm={12}>
         <Card>
-          <Statistic title={t('dashboard.totalProfit')} value={profit} precision={2} suffix="$" />
+          <Statistic
+            title={t('dashboard.totalProfit')}
+            value={profit}
+            precision={2}
+            suffix="$"
+          />
         </Card>
       </Col>
       <Col xs={12} sm={12}>

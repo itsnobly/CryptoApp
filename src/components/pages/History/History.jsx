@@ -1,6 +1,6 @@
 import { Table, Typography, Tag, Input, Select, Empty, Card } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import { SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -106,7 +106,13 @@ export default function History() {
         </Card>
       ) : (
         <>
-          <div style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div
+            style={{
+              marginBottom: 16,
+              display: 'flex',
+              gap: 12,
+              flexWrap: 'wrap',
+            }}>
             <Input
               placeholder={t('history.search')}
               prefix={<SearchOutlined />}
@@ -134,7 +140,16 @@ export default function History() {
                     pageSize: 10,
                     showSizeChanger: true,
                     pageSizeOptions: [10, 25, 50],
-                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} transactions`,
+
+                    showTotal: (total, range) =>
+                      `${range[0]}-${range[1]} ${t('history.of')} ${total} ${t(
+                        'history.transactions',
+                      )}`,
+
+                    locale: {
+                      items_per_page: t('history.perPage'),
+                    },
+
                     position: 'bottomCenter',
                   }
                 : false

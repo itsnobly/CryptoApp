@@ -1,25 +1,33 @@
 import { Card, Statistic, Row, Col } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 
 export default function AnalyticsCards() {
   const { assets } = useCrypto();
   const { t } = useLanguage();
 
-  // Calculate total portfolio value
-  const totalPortfolioValue = assets.reduce((sum, asset) => sum + (asset.totalAmount || 0), 0);
+  const totalPortfolioValue = assets.reduce(
+    (sum, asset) => sum + (asset.totalAmount || 0),
+    0,
+  );
 
-  // Calculate 24h change (simplified - using current profit as proxy since we don't have historical data)
-  const totalProfit = assets.reduce((sum, asset) => sum + (asset.totalProfit || 0), 0);
-  const totalInvested = assets.reduce((sum, asset) => sum + (asset.amount * asset.price || 0), 0);
-  const dailyChangePercent = totalInvested > 0 ? ((totalPortfolioValue - totalInvested) / totalInvested) * 100 : 0;
+  const totalProfit = assets.reduce(
+    (sum, asset) => sum + (asset.totalProfit || 0),
+    0,
+  );
+  const totalInvested = assets.reduce(
+    (sum, asset) => sum + (asset.amount * asset.price || 0),
+    0,
+  );
+  const dailyChangePercent =
+    totalInvested > 0
+      ? ((totalPortfolioValue - totalInvested) / totalInvested) * 100
+      : 0;
   const dailyChangeAmount = totalPortfolioValue - totalInvested;
 
-  // 24h P&L (same as total profit for now)
   const pnl24h = totalProfit;
 
-  // Find best performer (highest growth percent)
   const bestPerformer = assets.reduce((best, asset) => {
     if (!best || (asset.growPercent || 0) > (best.growPercent || 0)) {
       return asset;
@@ -27,7 +35,6 @@ export default function AnalyticsCards() {
     return best;
   }, null);
 
-  // Find worst performer (lowest growth percent or highest loss)
   const worstPerformer = assets.reduce((worst, asset) => {
     if (!worst || (asset.growPercent || 0) < (worst.growPercent || 0)) {
       return asset;
@@ -44,8 +51,18 @@ export default function AnalyticsCards() {
             value={dailyChangePercent}
             precision={2}
             suffix="%"
-            styles={{ content: { color: dailyChangePercent >= 0 ? '#3f8600' : '#cf1322' } }}
-            prefix={dailyChangePercent >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            styles={{
+              content: {
+                color: dailyChangePercent >= 0 ? '#3f8600' : '#cf1322',
+              },
+            }}
+            prefix={
+              dailyChangePercent >= 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )
+            }
           />
           <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
             {dailyChangeAmount >= 0 ? '+' : ''}${dailyChangeAmount.toFixed(2)}
@@ -72,7 +89,14 @@ export default function AnalyticsCards() {
             value={bestPerformer?.growPercent || 0}
             precision={2}
             suffix="%"
-            styles={{ content: { color: (bestPerformer?.growPercent || 0) >= 0 ? '#3f8600' : '#cf1322' } }}
+            styles={{
+              content: {
+                color:
+                  (bestPerformer?.growPercent || 0) >= 0
+                    ? '#3f8600'
+                    : '#cf1322',
+              },
+            }}
           />
           {bestPerformer && (
             <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
@@ -89,7 +113,14 @@ export default function AnalyticsCards() {
             value={worstPerformer?.growPercent || 0}
             precision={2}
             suffix="%"
-            styles={{ content: { color: (worstPerformer?.growPercent || 0) >= 0 ? '#3f8600' : '#cf1322' } }}
+            styles={{
+              content: {
+                color:
+                  (worstPerformer?.growPercent || 0) >= 0
+                    ? '#3f8600'
+                    : '#cf1322',
+              },
+            }}
           />
           {worstPerformer && (
             <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>

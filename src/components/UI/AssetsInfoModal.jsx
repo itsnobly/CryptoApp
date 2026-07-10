@@ -1,63 +1,281 @@
-import { Flex, Modal, Tag, Typography } from 'antd';
+import {
+  Form,
+  Select,
+  InputNumber,
+  Button,
+  Space,
+  DatePicker,
+  Typography,
+  Grid,
+} from 'antd';
+import { useState } from 'react';
+import { useCrypto } from '../../context/crypto-context';
+import { useLanguage } from '../../context/useLanguage';
+import AssetAddedResult from './AssetAddedResult';
 
-export default function CoinInfoModal({ coin, open, onOk, onCancel }) {
+const { Text } = Typography;
+const { useBreakpoint } = Grid;
+
+export default function AddAssetsForm({ onClose }) {
+  const { crypto, addAsset } = useCrypto();
+  const { t } = useLanguage();
+  const screens = useBreakpoint();
+
+  const [coin, setCoin] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [addedAsset, setAddedAsset] = useState(null);
+
+  const [form] = Form.useForm();
+
+  const amount = Form.useWatch('amount', form);
+  const buyPrice = Form.useWatch('buyPrice', form);
+
+  const currentPrice = coin?.price || 0;
+
+  const total = amount ? amount * (buyPrice || currentPrice) : 0;
+
+  const inputSize = screens.xs ? 'small' : 'middle';
+  const isMobile = screens.xs;
+
+  const options = crypto.map((coinItem) => ({
+    value: coinItem.id,
+    label: coinItem.name,
+    icon: coinItem.icon,
+  }));
+
+  const handleFinish = (values) => {
+    const assetPrice = values.buyPrice || currentPrice;
+    const assetAmount = values.amount;
+
+    const assetTotal = assetAmount * assetPrice;
+
+    const assetProfit = assetAmount * (currentPrice - assetPrice);
+
+    const assetGrow = assetPrice < currentPrice;
+
+    const growPercent =
+      assetPrice > 0
+        ? Number(((currentPrice - assetPrice) / assetPrice) * 100).toFixed(2)
+        : 0;
+
+    const asset = {
+      coin,
+      amount: assetAmount,
+      price: assetPrice,
+      date: values.date,
+      total: assetTotal,
+    };
+
+    const assetToAdd = {
+      id: coin.id,
+      name: coin.name,
+      symbol: coin.symbol,
+      icon: coin.icon,
+      amount: assetAmount,
+      price: assetPrice,
+      date: values.date,
+      totalAmount: assetTotal,
+      currentPrice,
+      totalProfit: assetProfit,
+      grow: assetGrow,
+      growPercent: parseFloat(growPercent),
+    };
+
+    addAsset(assetToAdd);
+
+    setAddedAsset(asset);
+    setSubmitted(true);
+
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  const resetCoin = () => {
+    setCoin(null);
+    form.resetFields();
+  };
+
+  if (submitted) {
+    return (
+      <AssetAddedResult
+        coin={addedAsset.coin}
+        amount={addedAsset.amount}
+        price={addedAsset.price}
+        onClose={onClose}
+        onAgain={() => {
+          setSubmitted(false);
+          setCoin(null);
+          setAddedAsset(null);
+          form.resetFields();
+        }}
+      />
+    );
+  }
+
   return (
-    <Modal
-      title={`Add ${coin?.name}`}
-      open={open}
-      onOk={onOk}
-      onCancel={onCancel}>
-      <h2>{coin?.name}</h2>
-      <img src={coin?.icon} alt={coin?.name} width={40} />
-      <Typography.Title level={2} style={{ margin: 0 }}>
-        ({coin?.symbol}) {coin?.price} USD
-      </Typography.Title>
-      <Typography.Paragraph
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          gap: '8px',
-        }}>
-        <Flex vertical gap="8px">
-          <Flex gap="9px">
-            <Typography.Text strong>1 hour:</Typography.Text>
+    <Form form={form} layout="vertical" onFinish={handleFinish}>
+      <Form.Item label={t('addAsset.selectCoin')}>
+        {!coin ? (
+          <Select
+            placeholder={t('addAsset.selectCoin')}
+            options={options}
+            size={inputSize}
+            onSelect={(value) => {
+              const selected = crypto.find((item) => item.id === value);
+              setCoin(selected);
+            }}
+            optionRender={(option) => (
+              <Space size={isMobile ? 'small' : 'middle'}>
+                <img
+                  src={option.data.icon}
+                  alt={option.data.label}
+                  width={isMobile ? 16 : 20}
+                  height={isMobile ? 16 : 20}
+                />
+                {option.data.label}
+              </Space>
+            )}
+          />
+        ) : (
+          <Space
+            align="center"
+            size={isMobile ? 'small' : 'middle'}
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+            }}>
+            <Space size={isMobile ? 'small' : 'middle'}>
+              <img
+                src={coin.icon}
+                alt={coin.name}
+                width={isMobile ? 24 : 30}
+                height={isMobile ? 24 : 30}
+              />
 
-            <Tag color={coin?.priceChange1h > 0 ? 'green' : 'red'}>
-              {coin?.priceChange1h}%
-            </Tag>
+              <span style={{ fontSize: isMobile ? '14px' : '16px' }}>
+                {coin.name}
+              </span>
+            </Space>
 
-            <Typography.Text strong>1 day:</Typography.Text>
+            <Button type="link" size={inputSize} onClick={resetCoin}>
+              {t('addAsset.changeCoin')}
+            </Button>
+          </Space>
+        )}
+      </Form.Item>
 
-            <Tag color={coin?.priceChange1d > 0 ? 'green' : 'red'}>
-              {coin?.priceChange1d}%
-            </Tag>
+      {coin && (
+        <>
+          <Form.Item
+            label={t('addAsset.amount')}
+            name="amount"
+            rules={[
+              {
+                required: true,
+                message: t('addAsset.amountRequired'),
+              },
+              {
+                validator(_, value) {
+                  if (!value) {
+                    return Promise.reject(t('addAsset.amountRequired'));
+                  }
 
-            <Typography.Text strong>1 week:</Typography.Text>
+                  if (value <= 0) {
+                    return Promise.reject(t('addAsset.amountPositive'));
+                  }
 
-            <Tag color={coin?.priceChange1w > 0 ? 'green' : 'red'}>
-              {coin?.priceChange1w}%
-            </Tag>
-          </Flex>
+                  return Promise.resolve();
+                },
+              },
+            ]}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder={t('addAsset.amount')}
+              size={inputSize}
+              controls={false}
+              inputMode="decimal"
+            />
+          </Form.Item>
 
-          <Typography.Text strong>Price USD:</Typography.Text>
-          <Typography.Text>{coin?.price?.toFixed(2)}$</Typography.Text>
+          <Form.Item
+            label={t('addAsset.buyPrice')}
+            name="buyPrice"
+            tooltip={t('addAsset.buyPriceTooltip')}
+            rules={[
+              {
+                validator(_, value) {
+                  if (value == null || value === '') {
+                    return Promise.resolve();
+                  }
 
-          <Typography.Text strong>Price BTC:</Typography.Text>
-          <Tag>{coin?.priceBtc}</Tag>
+                  if (value <= 0) {
+                    return Promise.reject(t('addAsset.pricePositive'));
+                  }
 
-          <Typography.Text strong>Market Cap:</Typography.Text>
-          <Tag>{coin?.marketCap}</Tag>
+                  return Promise.resolve();
+                },
+              },
+            ]}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder={
+                coin ? coin.price.toFixed(2) : t('addAsset.marketPrice')
+              }
+              size={inputSize}
+              controls={false}
+              inputMode="decimal"
+            />
+          </Form.Item>
 
-          {coin?.contractAddress && (
-            <>
-              <Typography.Text strong>Contract Address:</Typography.Text>
+          <Form.Item
+            label={t('addAsset.date')}
+            name="date"
+            rules={[
+              {
+                required: true,
+                message: t('addAsset.dateRequired'),
+              },
+            ]}>
+            <DatePicker
+              style={{ width: '100%' }}
+              size={inputSize}
+              placement="bottomLeft"
+              getPopupContainer={(trigger) => trigger.parentElement}
+              placeholder={t('addAsset.selectDate')}
+            />
+          </Form.Item>
 
-              <Tag>{coin.contractAddress}</Tag>
-            </>
-          )}
-        </Flex>
-      </Typography.Paragraph>
-    </Modal>
+          <Form.Item label={t('addAsset.total')}>
+            <InputNumber
+              disabled
+              style={{ width: '100%' }}
+              value={Number(total.toFixed(2))}
+              size={inputSize}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: '100%' }}
+              size={inputSize}>
+              {t('addAsset.submit')}
+            </Button>
+          </Form.Item>
+
+          {amount ? (
+            <Text type="secondary">
+              {buyPrice == null
+                ? `${t('addAsset.priceUsed')}: $${currentPrice.toFixed(2)}`
+                : `${t('addAsset.buyPriceText')}: $${(
+                    buyPrice || currentPrice
+                  ).toFixed(2)}`}
+            </Text>
+          ) : null}
+        </>
+      )}
+    </Form>
   );
 }

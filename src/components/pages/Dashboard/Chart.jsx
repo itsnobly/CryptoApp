@@ -1,6 +1,6 @@
 import { Typography, Row, Col, Tooltip, theme } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import { useState, useMemo } from 'react';
 
 const { Text, Title } = Typography;
@@ -53,13 +53,17 @@ export default function Chart() {
 
   const segments = useMemo(() => {
     const chartAssets = assets.filter((asset) => asset.amount > 0);
-    
+
     if (chartAssets.length === 0) return [];
 
     const raw = chartAssets.map((asset) => {
-      const assetValue = asset.totalAmount || (asset.amount * (asset.currentPrice || asset.price || 1));
+      const assetValue =
+        asset.totalAmount ||
+        asset.amount * (asset.currentPrice || asset.price || 1);
       const percentage = total > 0 ? (assetValue / total) * 100 : 100;
-      const value = Number(Math.round((percentage + Number.EPSILON) * 100) / 100);
+      const value = Number(
+        Math.round((percentage + Number.EPSILON) * 100) / 100,
+      );
       return {
         id: asset.id,
         label: asset.name || asset.id,
@@ -118,7 +122,7 @@ export default function Chart() {
         `Z`,
       ].join(' ');
     }
-    
+
     const start = polarToCartesian(startAngle);
     const end = polarToCartesian(endAngle);
     const largeArc = endAngle - startAngle > 180 ? 1 : 0;
@@ -137,9 +141,14 @@ export default function Chart() {
       </Title>
 
       <Row gutter={[32, 24]} align="middle">
-        <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+        <Col
+          xs={24}
+          md={12}
+          style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ position: 'relative', width: 220, height: 220 }}>
-            <svg viewBox="0 0 200 200" style={{ width: '100%', height: '100%' }}>
+            <svg
+              viewBox="0 0 200 200"
+              style={{ width: '100%', height: '100%' }}>
               {chartData.map((segment) => (
                 <g
                   key={segment.id}
@@ -147,7 +156,9 @@ export default function Chart() {
                   onMouseLeave={() => setHoveredAsset(null)}
                   style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
                   opacity={
-                    hoveredAsset === null || hoveredAsset === segment.id ? 1 : 0.5
+                    hoveredAsset === null || hoveredAsset === segment.id
+                      ? 1
+                      : 0.5
                   }>
                   <path
                     d={arcPath(segment.startAngle, segment.endAngle)}
@@ -175,7 +186,9 @@ export default function Chart() {
                         ? `${segment.color}15`
                         : 'transparent',
                     borderColor:
-                      hoveredAsset === segment.id ? segment.color : 'transparent',
+                      hoveredAsset === segment.id
+                        ? segment.color
+                        : 'transparent',
                   }}>
                   <div className="chart-legend-label">
                     <span

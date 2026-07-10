@@ -1,13 +1,18 @@
-import { Modal, Descriptions, Button, Space, Typography } from 'antd';
-import { formatCurrency, formatNumber, formatPercent } from '../../utils';
-import { useSettings } from '../../context/settings-context';
-
-const { Text } = Typography;
+import { Modal, Descriptions, Button, Space } from 'antd';
+import {
+  formatCurrency,
+  // formatNumber,
+  formatPercent,
+  formatCompactNumber,
+} from '../../utils';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function CoinInfoModal({ coin, open, onOk, onCancel }) {
-  const { showMarketPrices } = useSettings();
+  const { t } = useLanguage();
 
-  if (!coin) return null;
+  if (!coin) {
+    return null;
+  }
 
   return (
     <Modal
@@ -16,61 +21,67 @@ export default function CoinInfoModal({ coin, open, onOk, onCancel }) {
       onOk={onOk}
       onCancel={onCancel}
       width={700}>
-      <Space orientation="vertical" style={{ width: '100%' }} size="large">
+      <Space direction="vertical" style={{ width: '100%' }} size="large">
         <div style={{ textAlign: 'center' }}>
           <img src={coin.icon} alt={coin.name} width={80} height={80} />
         </div>
 
-        {!showMarketPrices ? (
-          <Text type="secondary">
-            Market prices are hidden. Enable &quot;Show market prices&quot; in
-            Settings to see details.
-          </Text>
-        ) : (
-          <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label="Current price">
-              {formatCurrency(coin.price)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Change 1h">
-              <span
-                style={{
-                  color: coin.priceChange1h > 0 ? '#52c41a' : '#f5222d',
-                }}>
-                {formatPercent(coin.priceChange1h)}
-              </span>
-            </Descriptions.Item>
-            <Descriptions.Item label="Change 24h">
-              <span
-                style={{
-                  color: coin.priceChange1d > 0 ? '#52c41a' : '#f5222d',
-                }}>
-                {formatPercent(coin.priceChange1d)}
-              </span>
-            </Descriptions.Item>
-            <Descriptions.Item label="Change 7d">
-              <span
-                style={{
-                  color: coin.priceChange1w > 0 ? '#52c41a' : '#f5222d',
-                }}>
-                {formatPercent(coin.priceChange1w)}
-              </span>
-            </Descriptions.Item>
-            <Descriptions.Item label="Market Cap">
-              {formatCurrency(coin.marketCap)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Volume 24h">
-              {formatCurrency(coin.volume)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Available Supply">
-              {formatNumber(coin.availableSupply)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Total Supply">
-              {formatNumber(coin.totalSupply)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Rank">{coin.rank}</Descriptions.Item>
-            <Descriptions.Item label="Symbol">{coin.symbol}</Descriptions.Item>
-          </Descriptions>
-        )}
+        <Descriptions column={2} bordered>
+          <Descriptions.Item label={t('coinInfo.currentPrice')}>
+            {formatCurrency(coin.price)}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.change1h')}>
+            <span
+              style={{
+                color: coin.priceChange1h > 0 ? '#52c41a' : '#f5222d',
+              }}>
+              {formatPercent(coin.priceChange1h)}
+            </span>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.change24h')}>
+            <span
+              style={{
+                color: coin.priceChange1d > 0 ? '#52c41a' : '#f5222d',
+              }}>
+              {formatPercent(coin.priceChange1d)}
+            </span>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.change7d')}>
+            <span
+              style={{
+                color: coin.priceChange1w > 0 ? '#52c41a' : '#f5222d',
+              }}>
+              {formatPercent(coin.priceChange1w)}
+            </span>
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.marketCap')}>
+            ${formatCompactNumber(coin.marketCap)}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.volume24h')}>
+            ${formatCompactNumber(coin.volume)}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.availableSupply')}>
+            {formatCompactNumber(coin.availableSupply)}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.totalSupply')}>
+            {formatCompactNumber(coin.totalSupply)}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.rank')}>
+            {coin.rank}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={t('coinInfo.symbol')}>
+            {coin.symbol}
+          </Descriptions.Item>
+        </Descriptions>
 
         {coin.websiteUrl && (
           <div>
@@ -79,7 +90,7 @@ export default function CoinInfoModal({ coin, open, onOk, onCancel }) {
               href={coin.websiteUrl}
               target="_blank"
               rel="noopener noreferrer">
-              Official website
+              {t('coinInfo.officialWebsite')}
             </Button>
           </div>
         )}

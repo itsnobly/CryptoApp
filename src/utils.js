@@ -28,7 +28,12 @@ export function capitalize(str) {
  * @returns {string} Отформатированная строка
  */
 export function formatCurrency(value, currency = 'USD') {
-  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '$0.00';
+  if (
+    typeof value !== 'number' ||
+    Number.isNaN(value) ||
+    !Number.isFinite(value)
+  )
+    return '$0.00';
   const rounded = Math.round((value + Number.EPSILON) * 100) / 100;
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -45,9 +50,15 @@ export function formatCurrency(value, currency = 'USD') {
  * @returns {string} Отформатированное число
  */
 export function formatNumber(value, fractionDigits = 2) {
-  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '0';
+  if (
+    typeof value !== 'number' ||
+    Number.isNaN(value) ||
+    !Number.isFinite(value)
+  )
+    return '0';
   const multiplier = Math.pow(10, fractionDigits);
-  const rounded = Math.round((value + Number.EPSILON) * multiplier) / multiplier;
+  const rounded =
+    Math.round((value + Number.EPSILON) * multiplier) / multiplier;
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
@@ -60,7 +71,12 @@ export function formatNumber(value, fractionDigits = 2) {
  * @returns {string} Сокращённая запись
  */
 export function abbreviateNumber(value) {
-  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '0';
+  if (
+    typeof value !== 'number' ||
+    Number.isNaN(value) ||
+    !Number.isFinite(value)
+  )
+    return '0';
   const absValue = Math.abs(value);
 
   if (absValue >= 1e9) {
@@ -97,4 +113,21 @@ export function formatPercent(value) {
   if (typeof value !== 'number' || Number.isNaN(value)) return '0%';
   const sign = value > 0 ? '+' : '';
   return `${sign}${value.toFixed(2)}%`;
+}
+export function formatCompactNumber(value) {
+  if (!value) return '0';
+
+  if (value >= 1_000_000_000_000) {
+    return `${(value / 1_000_000_000_000).toFixed(2)}T`;
+  }
+
+  if (value >= 1_000_000_000) {
+    return `${(value / 1_000_000_000).toFixed(2)}B`;
+  }
+
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(2)}M`;
+  }
+
+  return value.toLocaleString();
 }

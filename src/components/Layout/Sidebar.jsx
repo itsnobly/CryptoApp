@@ -1,4 +1,5 @@
-import { Menu, Button } from 'antd';
+import { Menu } from 'antd';
+
 import {
   DashboardOutlined,
   WalletOutlined,
@@ -6,17 +7,11 @@ import {
   SettingOutlined,
   LineChartOutlined,
   StarOutlined,
-  CloseOutlined,
 } from '@ant-design/icons';
-import { useLanguage } from '../../context/LanguageContext';
 
-export default function Sidebar({
-  collapsed,
-  selectedPage,
-  onSelect,
-  isMobile,
-  onClose,
-}) {
+import { useLanguage } from '../../context/useLanguage';
+
+export default function Sidebar({ collapsed, selectedPage, onSelect }) {
   const { t } = useLanguage();
 
   const items = [
@@ -55,26 +50,18 @@ export default function Sidebar({
   return (
     <>
       <div
-        className="logo"
         style={{
           height: 64,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: isMobile ? 'space-between' : (collapsed ? 'center' : 'center'),
-          color: 'white',
-          fontSize: 18,
+          justifyContent: 'center',
+          color: '#fff',
+          fontSize: collapsed ? 28 : 20,
           fontWeight: 700,
-          padding: isMobile ? '0 16px' : 0,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
         }}>
         {collapsed ? '₿' : 'Crypto Tracker'}
-        {isMobile && (
-          <Button
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={onClose}
-            style={{ color: 'white', fontSize: 16 }}
-          />
-        )}
       </div>
 
       <Menu
@@ -82,9 +69,8 @@ export default function Sidebar({
         mode="inline"
         inlineCollapsed={collapsed}
         selectedKeys={[selectedPage]}
-        onSelect={({ key }) => onSelect?.(key)}
         items={items}
-        style={{ borderRight: 0 }}
+        onSelect={({ key }) => onSelect(key)}
       />
     </>
   );

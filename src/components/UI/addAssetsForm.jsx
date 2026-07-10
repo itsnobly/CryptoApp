@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { useCrypto } from '../../context/crypto-context';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/useLanguage';
 import AssetAddedResult from './AssetAddedResult';
 
 const { Text } = Typography;
@@ -75,16 +75,11 @@ export default function AddAssetsForm({ onClose }) {
       grow: assetGrow,
       growPercent: parseFloat(growPercent),
     };
-    
+
     addAsset(assetToAdd);
 
     setAddedAsset(asset);
     setSubmitted(true);
-    
-    // Close drawer after successful add
-    if (onClose) {
-      onClose();
-    }
   };
 
   const resetCoin = () => {
@@ -139,8 +134,15 @@ export default function AddAssetsForm({ onClose }) {
             size={isMobile ? 'small' : 'middle'}
             style={{ width: '100%', justifyContent: 'space-between' }}>
             <Space size={isMobile ? 'small' : 'middle'}>
-              <img src={coin.icon} alt={coin.name} width={isMobile ? 24 : 30} height={isMobile ? 24 : 30} />
-              <span style={{ fontSize: isMobile ? '14px' : '16px' }}>{coin.name}</span>
+              <img
+                src={coin.icon}
+                alt={coin.name}
+                width={isMobile ? 24 : 30}
+                height={isMobile ? 24 : 30}
+              />
+              <span style={{ fontSize: isMobile ? '14px' : '16px' }}>
+                {coin.name}
+              </span>
             </Space>
             <Button type="link" size={inputSize} onClick={resetCoin}>
               {t('addAsset.changeCoin')}
@@ -171,11 +173,13 @@ export default function AddAssetsForm({ onClose }) {
                 },
               },
             ]}>
-            <InputNumber 
-              style={{ width: '100%' }} 
-              placeholder={t('addAsset.amount')} 
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder={t('addAsset.amount')}
               size={inputSize}
               controls={false}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
           </Form.Item>
 
@@ -201,6 +205,8 @@ export default function AddAssetsForm({ onClose }) {
               placeholder={coin ? coin.price.toFixed(2) : 'Market price'}
               size={inputSize}
               controls={false}
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
           </Form.Item>
 
@@ -213,11 +219,18 @@ export default function AddAssetsForm({ onClose }) {
                 message: t('addAsset.dateRequired'),
               },
             ]}>
-            <DatePicker 
-              style={{ width: '100%' }} 
+            <DatePicker
+              style={{ width: '100%' }}
               size={inputSize}
               placement="bottomLeft"
               getPopupContainer={(trigger) => trigger.parentElement}
+              inputMode="none"
+              onKeyDown={(e) => {
+                if (e.key === '+' || e.key === '-') {
+                  e.preventDefault();
+                }
+              }}
+              placeholder={t('addAsset.selectDate')}
             />
           </Form.Item>
 
@@ -231,7 +244,11 @@ export default function AddAssetsForm({ onClose }) {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: '100%' }} size={inputSize}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: '100%' }}
+              size={inputSize}>
               {t('addAsset.submit')}
             </Button>
           </Form.Item>

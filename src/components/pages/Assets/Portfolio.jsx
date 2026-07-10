@@ -1,8 +1,22 @@
-import { Table, Tag, Typography, Button, Space, Popconfirm, Input, Modal } from 'antd';
-import { EditOutlined, DeleteOutlined, SearchOutlined, DollarOutlined } from '@ant-design/icons';
+import {
+  Table,
+  Tag,
+  Typography,
+  Button,
+  Space,
+  Popconfirm,
+  Input,
+  Modal,
+} from 'antd';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  DollarOutlined,
+} from '@ant-design/icons';
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import { useState } from 'react';
 import SellAssetsForm from '../../UI/SellAssetsForm';
 
@@ -61,7 +75,10 @@ export default function Portfolio() {
             type="number"
             value={editingAsset.amount}
             onChange={(e) =>
-              setEditingAsset({ ...editingAsset, amount: parseFloat(e.target.value) || 0 })
+              setEditingAsset({
+                ...editingAsset,
+                amount: parseFloat(e.target.value) || 0,
+              })
             }
             style={{ width: 100 }}
           />
@@ -80,7 +97,10 @@ export default function Portfolio() {
             type="number"
             value={editingAsset.price}
             onChange={(e) =>
-              setEditingAsset({ ...editingAsset, price: parseFloat(e.target.value) || 0 })
+              setEditingAsset({
+                ...editingAsset,
+                price: parseFloat(e.target.value) || 0,
+              })
             }
             style={{ width: 100 }}
           />
@@ -177,7 +197,8 @@ export default function Portfolio() {
                 pageSize: 10,
                 showSizeChanger: true,
                 pageSizeOptions: [10, 25, 50],
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} assets`,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} assets`,
                 position: 'bottomCenter',
               }
             : false
@@ -185,7 +206,7 @@ export default function Portfolio() {
         scroll={{ x: 800, y: 400 }}
         rowKey="key"
       />
-      
+
       <Modal
         title={`${t('sellAsset.submit')} ${sellingAsset?.name || ''}`}
         open={!!sellingAsset}

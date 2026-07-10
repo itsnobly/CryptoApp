@@ -1,4 +1,5 @@
 import { Result, Button } from 'antd';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function AssetAddedResult({
   coin,
@@ -7,18 +8,22 @@ export default function AssetAddedResult({
   onClose,
   onAgain,
 }) {
+  const { t } = useLanguage();
+
   return (
     <Result
       status="success"
-      title="Asset Added"
-      subTitle={`Added ${amount} ${coin.name} by price ${price}$`}
+      title={t('assetResult.title')}
+      subTitle={`${t('assetResult.added')} ${amount} ${coin.name} ${t(
+        'assetResult.price',
+      )} ${price}$`}
       extra={[
         <Button type="primary" key="close" onClick={onClose}>
-          Close
+          {t('common.close')}
         </Button>,
 
         <Button key="again" onClick={onAgain}>
-          Add Again
+          {t('assetResult.again')}
         </Button>,
       ]}
     />

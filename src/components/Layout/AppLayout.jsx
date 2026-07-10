@@ -1,74 +1,74 @@
 import { useContext, useState } from 'react';
 import { Layout, theme, Spin, Drawer, Grid } from 'antd';
+
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Content from './Content';
+
 import { CryptoContext } from '../../context/crypto-context';
 
 const { Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 export default function AppLayout() {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [selectedPage, setSelectedPage] = useState('dashboard');
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const { loading } = useContext(CryptoContext);
+
   const screens = useBreakpoint();
-  const isMobile = screens.xs || screens.sm || screens.md;
+
+  const isMobile = !screens.md;
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const handlePageSelect = (page) => {
-    setSelectedPage(page);
-    if (isMobile) setMobileDrawerOpen(false);
-  };
-
   if (loading) {
-    return (
-      <div className="loader">
-        <Spin fullscreen />
-      </div>
-    );
+    return <Spin fullscreen />;
   }
 
-  const sidebarContent = (
-    <Sidebar
-      collapsed={isMobile ? false : collapsed}
-      selectedPage={selectedPage}
-      onSelect={handlePageSelect}
-      isMobile={isMobile}
-      onClose={() => setMobileDrawerOpen(false)}
-    />
-  );
-
   return (
-    <Layout className="app-layout">
+    <Layout
+      style={{
+        minHeight: '100vh',
+      }}>
       {!isMobile && (
         <Sider
-          width={256}
-          collapsedWidth={80}
+          width={240}
+          collapsedWidth={70}
           collapsed={collapsed}
+          trigger={null}
           style={{
-            overflow: 'auto',
-            height: '100vh',
             position: 'fixed',
+            height: '100vh',
             left: 0,
             top: 0,
-            bottom: 0,
+            overflow: 'hidden',
           }}>
-          {sidebarContent}
+          <Sidebar
+            collapsed={collapsed}
+            selectedPage={selectedPage}
+            onSelect={setSelectedPage}
+          />
         </Sider>
       )}
 
-      <Layout style={{ marginLeft: !isMobile ? (collapsed ? 80 : 256) : 0 }}>
+      <Layout
+        style={{
+          marginLeft: isMobile ? 0 : collapsed ? 70 : 240,
+          minHeight: '100vh',
+          transition: 'margin-left .25s ease',
+        }}>
         <Header
           colorBgContainer={colorBgContainer}
-          isMobile={isMobile}
-          onMenuClick={() => setMobileDrawerOpen(true)}
-          onCollapseToggle={() => setCollapsed(!collapsed)}
           collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          isMobile={isMobile}
+          openMobileMenu={() => {
+            setMobileOpen(true);
+          }}
         />
 
         <Content
@@ -81,12 +81,29 @@ export default function AppLayout() {
       {isMobile && (
         <Drawer
           placement="left"
-          open={mobileDrawerOpen}
-          onClose={() => setMobileDrawerOpen(false)}
-          styles={{ body: { padding: 0, background: '#001529' } }}
-          size={260}
-          closable={false}>
-          {sidebarContent}
+          open={mobileOpen}
+          onClose={() => {
+            setMobileOpen(false);
+          }}
+          closable={false}
+          width={260}
+          styles={{
+            body: {
+              padding: 0,
+              background: '#001529',
+            },
+          }}>
+          <Sidebar
+            collapsed={false}
+            selectedPage={selectedPage}
+            isMobile
+            onClose={() => setMobileOpen(false)}
+            onSelect={(page) => {
+              setSelectedPage(page);
+
+              setMobileOpen(false);
+            }}
+          />
         </Drawer>
       )}
     </Layout>

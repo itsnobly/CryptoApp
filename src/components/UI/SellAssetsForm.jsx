@@ -1,23 +1,26 @@
-import { Form, Input, InputNumber, Button, Select, DatePicker, message, Grid } from 'antd';
+import { Form, InputNumber, Button, DatePicker, message, Grid } from 'antd';
+
 import { useCrypto } from '../../context/crypto-context';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/useLanguage';
+
 import { useState } from 'react';
 import dayjs from 'dayjs';
 
-const { Option } = Select;
 const { useBreakpoint } = Grid;
 
 export default function SellAssetsForm({ asset, onClose }) {
   const { sellAsset, crypto } = useCrypto();
   const { t } = useLanguage();
+
   const screens = useBreakpoint();
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
   const coin = crypto.find((c) => c.id === asset.id);
+
   const currentPrice = coin?.price || asset.currentPrice || asset.price;
 
-  // Responsive size based on screen width
   const inputSize = screens.xs ? 'small' : 'middle';
   const isMobile = screens.xs;
 
@@ -26,7 +29,9 @@ export default function SellAssetsForm({ asset, onClose }) {
     const sellPrice = values.price || currentPrice;
 
     if (sellAmount > asset.amount) {
-      message.error(`Cannot sell more than available amount (${asset.amount.toFixed(6)})`);
+      message.error(
+        `${t('sellAsset.amountRange')} 0.000001 and ${asset.amount.toFixed(6)}`,
+      );
       return;
     }
 
@@ -36,13 +41,16 @@ export default function SellAssetsForm({ asset, onClose }) {
     }
 
     setLoading(true);
+
     try {
       sellAsset(asset.id, sellAmount, sellPrice);
-      message.success(`Sold ${sellAmount} ${asset.symbol} at $${sellPrice.toFixed(2)}`);
+
+      message.success(`${t('sellAsset.submit')} ${sellAmount} ${asset.symbol}`);
+
       form.resetFields();
       onClose();
-    } catch (error) {
-      message.error('Failed to sell asset');
+    } catch {
+      message.error(t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -50,11 +58,31 @@ export default function SellAssetsForm({ asset, onClose }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, padding: isMobile ? 8 : 12, background: '#f5f5f5', borderRadius: 8 }}>
-        <div style={{ fontSize: isMobile ? '13px' : '14px' }}><strong>{t('common.coin')}:</strong> {asset.name} ({asset.symbol})</div>
-        <div style={{ fontSize: isMobile ? '13px' : '14px' }}><strong>{t('common.available')}:</strong> {asset.amount.toFixed(6)} {asset.symbol}</div>
-        <div style={{ fontSize: isMobile ? '13px' : '14px' }}><strong>{t('common.currentPrice')}:</strong> ${currentPrice.toFixed(2)}</div>
-        <div style={{ fontSize: isMobile ? '13px' : '14px' }}><strong>{t('common.currentValue')}:</strong> ${(asset.amount * currentPrice).toFixed(2)}</div>
+      <div
+        style={{
+          marginBottom: 16,
+          padding: isMobile ? 8 : 12,
+          background: '#f5f5f5',
+          borderRadius: 8,
+        }}>
+        <div>
+          <strong>{t('common.coin')}:</strong> {asset.name} ({asset.symbol})
+        </div>
+
+        <div>
+          <strong>{t('common.available')}:</strong> {asset.amount.toFixed(6)}{' '}
+          {asset.symbol}
+        </div>
+
+        <div>
+          <strong>{t('common.currentPrice')}:</strong> $
+          {currentPrice.toFixed(2)}
+        </div>
+
+        <div>
+          <strong>{t('common.currentValue')}:</strong> $
+          {(asset.amount * currentPrice).toFixed(2)}
+        </div>
       </div>
 
       <Form
@@ -70,7 +98,10 @@ export default function SellAssetsForm({ asset, onClose }) {
           label={t('sellAsset.sellAmount')}
           name="amount"
           rules={[
-            { required: true, message: t('sellAsset.amountRequired') },
+            {
+              required: true,
+              message: t('sellAsset.amountRequired'),
+            },
             {
               type: 'number',
               min: 0.000001,
@@ -80,7 +111,6 @@ export default function SellAssetsForm({ asset, onClose }) {
           ]}>
           <InputNumber
             style={{ width: '100%' }}
-            placeholder={t('sellAsset.sellAmount')}
             step={0.000001}
             precision={6}
             max={asset.amount}
@@ -93,12 +123,18 @@ export default function SellAssetsForm({ asset, onClose }) {
           label={t('sellAsset.sellPrice')}
           name="price"
           rules={[
-            { required: true, message: t('sellAsset.priceRequired') },
-            { type: 'number', min: 0.01, message: t('sellAsset.priceMin') },
+            {
+              required: true,
+              message: t('sellAsset.priceRequired'),
+            },
+            {
+              type: 'number',
+              min: 0.01,
+              message: t('sellAsset.priceMin'),
+            },
           ]}>
           <InputNumber
             style={{ width: '100%' }}
-            placeholder={t('sellAsset.sellPrice')}
             step={0.01}
             precision={2}
             min={0.01}
@@ -110,17 +146,22 @@ export default function SellAssetsForm({ asset, onClose }) {
         <Form.Item
           label={t('addAsset.date')}
           name="date"
-          rules={[{ required: true, message: t('sellAsset.dateRequired') }]}>
-          <DatePicker 
-            style={{ width: '100%' }} 
-            size={inputSize}
-            placement="bottomLeft"
-            getPopupContainer={(trigger) => trigger.parentElement}
-          />
+          rules={[
+            {
+              required: true,
+              message: t('sellAsset.dateRequired'),
+            },
+          ]}>
+          <DatePicker style={{ width: '100%' }} size={inputSize} />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} block size={inputSize}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            block
+            size={inputSize}>
             {t('sellAsset.submit')} {asset.symbol}
           </Button>
         </Form.Item>

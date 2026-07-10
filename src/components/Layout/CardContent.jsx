@@ -1,7 +1,7 @@
 import { Card, Statistic, Typography, Tag, Pagination } from 'antd';
 import { useContext, useState, useEffect } from 'react';
 import { CryptoContext } from '../../context/crypto-context';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/useLanguage';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { capitalize } from '../../utils';
 
@@ -38,7 +38,9 @@ export default function CardContent() {
         <Title level={4} style={{ margin: 0 }}>
           {t('dashboard.yourAssets')}
         </Title>
-        <Text type="secondary">{assets.length} {t('dashboard.total')}</Text>
+        <Text type="secondary">
+          {assets.length} {t('dashboard.total')}
+        </Text>
       </div>
 
       <div className="asset-cards-grid">
@@ -49,16 +51,22 @@ export default function CardContent() {
               value={asset.totalAmount}
               precision={2}
               styles={{
-                content: { color: asset.grow ? '#3f8600' : '#cf1322' }
+                content: { color: asset.grow ? '#3f8600' : '#cf1322' },
               }}
             />
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                marginTop: '12px',
+              }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Text type="secondary">{t('dashboard.totalProfit')}</Text>
                 <span>
                   <Tag color={asset.grow ? 'green' : 'red'}>
-                    {asset.growPercent}%
+                    {Number(asset.growPercent).toFixed(2)}%
                   </Tag>
                 </span>
               </div>
@@ -89,9 +97,7 @@ export default function CardContent() {
             pageSize={PAGE_SIZE}
             onChange={setPage}
             showSizeChanger={false}
-            showTotal={(total, range) =>
-              `${range[0]}-${range[1]} of ${total}`
-            }
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total}`}
           />
         </div>
       )}

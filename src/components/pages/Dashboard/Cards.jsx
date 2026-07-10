@@ -1,6 +1,6 @@
 import { Row, Col, Card, Statistic } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 
 export default function Cards() {
   const { assets } = useCrypto();
@@ -14,8 +14,11 @@ export default function Cards() {
     0,
   );
   const totalCount = assets.length;
-  
-  const roi = totalInvested > 0 ? ((totalAmount - totalInvested) / totalInvested) * 100 : 0;
+
+  const roi =
+    totalInvested > 0
+      ? ((totalAmount - totalInvested) / totalInvested) * 100
+      : 0;
 
   return (
     <Row gutter={[12, 12]}>
@@ -61,7 +64,7 @@ export default function Cards() {
               content: {
                 fontSize: '24px',
                 color: roi >= 0 ? '#3f8600' : '#cf1322',
-              }
+              },
             }}
           />
         </Card>

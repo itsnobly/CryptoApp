@@ -1,6 +1,6 @@
 import { Card, Typography, Space, Switch, Select } from 'antd';
 import { useSettings } from '../../../context/settings-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 
 const { Title, Text } = Typography;
 
@@ -25,10 +25,7 @@ export default function Settings() {
           </div>
           <div className="settings-row">
             <Text>{t('settings.showMarketPrices')}</Text>
-            <Switch
-              checked={showMarketPrices}
-              onChange={setShowMarketPrices}
-            />
+            <Switch checked={showMarketPrices} onChange={setShowMarketPrices} />
           </div>
           <div className="settings-row">
             <Text>{t('settings.language')}</Text>

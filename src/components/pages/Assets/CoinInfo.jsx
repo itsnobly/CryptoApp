@@ -1,6 +1,6 @@
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import { Typography, Avatar } from 'antd';
 
 const { Title, Text } = Typography;
@@ -15,9 +15,7 @@ export default function CoinInfo() {
     return (
       <div>
         <Title level={5}>{t('common.topCoins')}</Title>
-        <Text type="secondary">
-          {t('common.marketPricesHidden')}
-        </Text>
+        <Text type="secondary">{t('common.marketPricesHidden')}</Text>
       </div>
     );
   }

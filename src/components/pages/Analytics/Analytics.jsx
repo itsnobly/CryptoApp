@@ -1,6 +1,6 @@
 import { Row, Col, Card, Statistic, Typography, Table, Tag } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
-import { useLanguage } from '../../../context/LanguageContext';
+import { useLanguage } from '../../../context/useLanguage';
 import { formatCurrency, formatPercent } from '../../../utils';
 
 const { Title } = Typography;
@@ -21,31 +21,36 @@ export default function Analytics() {
     (sum, asset) => sum + (asset.totalProfit || 0),
     0,
   );
-  
+
   // Calculate realized profit from SELL transactions
   const realizedProfit = transactions
     .filter((tx) => tx.type === 'SELL')
     .reduce((sum, tx) => sum + (tx.profit || 0), 0);
-  
+
   // Unrealized profit is current portfolio profit
   const unrealizedProfit = totalProfit;
-  
+
   // Total profit includes both realized and unrealized
   const overallProfit = realizedProfit + unrealizedProfit;
-  
-  const roi = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0;
 
-  const bestPerformer = assets.length > 0
-    ? assets.reduce((best, asset) =>
-        (asset.growPercent || 0) > (best.growPercent || 0) ? asset : best,
-      )
-    : null;
+  const roi =
+    totalInvested > 0
+      ? ((totalValue - totalInvested) / totalInvested) * 100
+      : 0;
 
-  const worstPerformer = assets.length > 0
-    ? assets.reduce((worst, asset) =>
-        (asset.growPercent || 0) < (worst.growPercent || 0) ? asset : worst,
-      )
-    : null;
+  const bestPerformer =
+    assets.length > 0
+      ? assets.reduce((best, asset) =>
+          (asset.growPercent || 0) > (best.growPercent || 0) ? asset : best,
+        )
+      : null;
+
+  const worstPerformer =
+    assets.length > 0
+      ? assets.reduce((worst, asset) =>
+          (asset.growPercent || 0) < (worst.growPercent || 0) ? asset : worst,
+        )
+      : null;
 
   const performanceColumns = [
     {
@@ -96,16 +101,26 @@ export default function Analytics() {
   return (
     <div className="page-container">
       <Title level={3}>{t('dashboard.analytics')}</Title>
-      
+
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic title={t('dashboard.totalInvested')} value={totalInvested} precision={2} prefix="$" />
+            <Statistic
+              title={t('dashboard.totalInvested')}
+              value={totalInvested}
+              precision={2}
+              prefix="$"
+            />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic title={t('dashboard.currentValue')} value={totalValue} precision={2} prefix="$" />
+            <Statistic
+              title={t('dashboard.currentValue')}
+              value={totalValue}
+              precision={2}
+              prefix="$"
+            />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
@@ -116,7 +131,7 @@ export default function Analytics() {
               precision={2}
               prefix="$"
               styles={{
-                content: { color: realizedProfit >= 0 ? '#3f8600' : '#cf1322' }
+                content: { color: realizedProfit >= 0 ? '#3f8600' : '#cf1322' },
               }}
             />
           </Card>
@@ -129,7 +144,9 @@ export default function Analytics() {
               precision={2}
               prefix="$"
               styles={{
-                content: { color: unrealizedProfit >= 0 ? '#3f8600' : '#cf1322' }
+                content: {
+                  color: unrealizedProfit >= 0 ? '#3f8600' : '#cf1322',
+                },
               }}
             />
           </Card>
@@ -145,7 +162,10 @@ export default function Analytics() {
               precision={2}
               prefix="$"
               styles={{
-                content: { color: overallProfit >= 0 ? '#3f8600' : '#cf1322', fontSize: '28px' }
+                content: {
+                  color: overallProfit >= 0 ? '#3f8600' : '#cf1322',
+                  fontSize: '28px',
+                },
               }}
             />
           </Card>
@@ -158,7 +178,10 @@ export default function Analytics() {
               precision={2}
               suffix="%"
               styles={{
-                content: { color: roi >= 0 ? '#3f8600' : '#cf1322', fontSize: '28px' }
+                content: {
+                  color: roi >= 0 ? '#3f8600' : '#cf1322',
+                  fontSize: '28px',
+                },
               }}
             />
           </Card>
@@ -176,7 +199,7 @@ export default function Analytics() {
                   precision={2}
                   suffix="%"
                   styles={{
-                    content: { color: '#3f8600', fontSize: '32px' }
+                    content: { color: '#3f8600', fontSize: '32px' },
                   }}
                 />
               </div>
@@ -195,7 +218,7 @@ export default function Analytics() {
                   precision={2}
                   suffix="%"
                   styles={{
-                    content: { color: '#cf1322', fontSize: '32px' }
+                    content: { color: '#cf1322', fontSize: '32px' },
                   }}
                 />
               </div>
