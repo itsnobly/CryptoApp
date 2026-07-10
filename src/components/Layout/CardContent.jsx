@@ -1,4 +1,4 @@
-import { Card, Statistic, Spin, Typography, List, Tag } from 'antd';
+import { Card, Statistic, Typography, List, Tag } from 'antd';
 import { useContext } from 'react';
 import { CryptoContext } from '../../context/crypto-context';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
@@ -6,14 +6,7 @@ import { capitalize } from '../../utils';
 const { Text } = Typography;
 
 export default function CardContent() {
-  const { assets, loading } = useContext(CryptoContext);
-  if (loading) {
-    return (
-      <div className="loader">
-        <Spin fullscreen />
-      </div>
-    );
-  }
+  const { assets } = useContext(CryptoContext);
 
   return (
     <div
