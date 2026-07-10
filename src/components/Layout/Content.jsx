@@ -1,9 +1,16 @@
 import { Layout } from 'antd';
-import CardContent from './CardContent';
+import Dashboard from '../pages/Dashboard/Dashboard';
+import Assets from '../pages/Assets/Assets';
+import History from '../pages/History/History';
+import Settings from '../pages/Settings/Settings';
 
 const { Content: AntContent } = Layout;
 
-export default function Content({ colorBgContainer, borderRadiusLG }) {
+export default function Content({
+  selectedPage,
+  colorBgContainer,
+  borderRadiusLG,
+}) {
   return (
     <AntContent
       className="content"
@@ -11,7 +18,10 @@ export default function Content({ colorBgContainer, borderRadiusLG }) {
         background: colorBgContainer,
         borderRadius: borderRadiusLG,
       }}>
-      <CardContent />
+      {selectedPage === 'dashboard' && <Dashboard />}
+      {selectedPage === 'assets' && <Assets />}
+      {selectedPage === 'history' && <History />}
+      {selectedPage === 'settings' && <Settings />}
     </AntContent>
   );
 }

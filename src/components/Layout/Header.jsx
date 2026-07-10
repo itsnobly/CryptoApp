@@ -1,4 +1,5 @@
 import { Layout, Select, Space, Button, Drawer } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import { useCrypto } from '../../context/crypto-context';
 
@@ -7,27 +8,13 @@ import AddAssetsForm from '../UI/addAssetsForm';
 
 const { Header: AntHeader } = Layout;
 
-export default function Header({ colorBgContainer }) {
+export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
   const { crypto } = useCrypto();
 
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [selectOpen, setSelectOpen] = useState(false);
-
   const [drawer, setDrawer] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
 
   useEffect(() => {
     const keydown = (event) => {
@@ -38,10 +25,7 @@ export default function Header({ colorBgContainer }) {
     };
 
     document.addEventListener('keydown', keydown);
-
-    return () => {
-      document.removeEventListener('keydown', keydown);
-    };
+    return () => document.removeEventListener('keydown', keydown);
   }, []);
 
   const options = crypto.map((coin) => ({
@@ -55,70 +39,76 @@ export default function Header({ colorBgContainer }) {
   return (
     <AntHeader
       className="header"
-      style={{
-        background: colorBgContainer,
-      }}>
-      <Select
-        style={{
-          width: 250,
-        }}
-        value={selectedCoin}
-        placeholder="Select coin"
-        open={selectOpen}
-        onOpenChange={setSelectOpen}
-        options={options}
-        onChange={(value) => {
-          setSelectedCoin(value);
-          setSelectOpen(false);
-          showModal();
-        }}
-        optionRender={(option) => (
-          <Space>
-            <img
-              src={option.data.icon}
-              alt={option.data.label}
-              width={20}
-              height={20}
-            />
-
-            {option.data.label}
-          </Space>
+      style={{ background: colorBgContainer }}>
+      <div className="header-left">
+        {isMobile && (
+          <Button
+            type="text"
+            icon={<MenuOutlined />}
+            onClick={onMenuClick}
+            className="mobile-menu-btn"
+          />
         )}
-        labelRender={() =>
-          selected && (
+        <Select
+          className="coin-select"
+          value={selectedCoin}
+          placeholder="Select coin"
+          open={selectOpen}
+          onOpenChange={setSelectOpen}
+          options={options}
+          showSearch
+          filterOption={(input, option) =>
+            option.label.toLowerCase().includes(input.toLowerCase())
+          }
+          onChange={(value) => {
+            setSelectedCoin(value);
+            setSelectOpen(false);
+            setIsModalOpen(true);
+          }}
+          optionRender={(option) => (
             <Space>
               <img
-                src={selected.icon}
-                alt={selected.name}
+                src={option.data.icon}
+                alt={option.data.label}
                 width={20}
                 height={20}
               />
-
-              {selected.name}
+              {option.data.label}
             </Space>
-          )
-        }
-      />
+          )}
+          labelRender={() =>
+            selected && (
+              <Space>
+                <img
+                  src={selected.icon}
+                  alt={selected.name}
+                  width={20}
+                  height={20}
+                />
+                {selected.name}
+              </Space>
+            )
+          }
+        />
+      </div>
 
       <Button type="primary" onClick={() => setDrawer(true)}>
-        Add Assets
+        {isMobile ? 'Add' : 'Add Assets'}
       </Button>
 
       <CoinInfoModal
         coin={selected}
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onOk={() => setIsModalOpen(false)}
+        onCancel={() => setIsModalOpen(false)}
       />
 
       <Drawer
-        size={500}
+        size={isMobile ? 'default' : 500}
         title="Add Assets"
         open={drawer}
         destroyOnClose
-        onClose={() => {
-          setDrawer(false);
-        }}>
+        onClose={() => setDrawer(false)}>
         <AddAssetsForm onClose={() => setDrawer(false)} />
       </Drawer>
     </AntHeader>

@@ -1,7 +1,10 @@
 {
-  "name": "vite-project",
+  "name": "crypto-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A modern cryptocurrency portfolio management application built with React and Vite",
+  "author": "Your Name",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,6 +26,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
+    "terser": "^5.49.0",
     "vite": "^8.1.1"
   }
 }

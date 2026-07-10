@@ -1,95 +1,105 @@
-import { Card, Statistic, Typography, List, Tag } from 'antd';
-import { useContext } from 'react';
+import { Card, Statistic, Typography, List, Tag, Pagination } from 'antd';
+import { useContext, useState, useEffect } from 'react';
 import { CryptoContext } from '../../context/crypto-context';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { capitalize } from '../../utils';
-const { Text } = Typography;
+
+const { Text, Title } = Typography;
+const PAGE_SIZE = 6;
 
 export default function CardContent() {
   const { assets } = useContext(CryptoContext);
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(assets.length / PAGE_SIZE);
+
+  useEffect(() => {
+    if (page > totalPages && totalPages > 0) setPage(totalPages);
+  }, [assets.length, page, totalPages]);
+
+  const paginatedAssets = assets.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
+  if (assets.length === 0) {
+    return (
+      <Card variant="borderless">
+        <Text type="secondary">No assets yet. Add your first asset above.</Text>
+      </Card>
+    );
+  }
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '16px',
-      }}>
-      {assets.map((asset) => (
-        <Card key={asset.id} variant="borderless">
-          <Statistic
-            title={capitalize(asset.name)}
-            value={asset.totalAmount}
-            precision={2}
-            styles={{
-              content: {
-                color: asset.grow ? '#3f8600' : '#cf1322',
-              },
-            }}
-          />
+    <div className="asset-cards-section">
+      <div className="asset-cards-header">
+        <Title level={4} style={{ margin: 0 }}>
+          Your Assets
+        </Title>
+        <Text type="secondary">{assets.length} total</Text>
+      </div>
 
-          <List
-            size="small"
-            dataSource={[
-              {
-                title: 'Total Profit',
-                value: asset.totalProfit,
-                withTag: true,
-              },
-              {
-                title: 'Asset Amount',
-                value: asset.amount,
-                isPlain: true,
-              },
-              // {
-              //   title: 'Difference',
-              //   value: asset.growPercent,
-              // },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <Text>{item.title}</Text>
-                <span>
-                  {item.withTag && (
-                    <Tag color={asset.grow ? 'green' : 'red'}>
-                      {' '}
-                      {asset.growPercent}%
-                    </Tag>
-                  )}
-                  {/* {item.isPlain && item.value} */}
-                  {item.isPlain ? (
-                    <Text type={asset.grow ? 'success' : 'danger'}>
-                      {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
-                      {Number(item.value).toFixed(2)}
-                    </Text>
-                  ) : item.title === 'Difference' ? (
-                    <Text type={asset.grow ? 'success' : 'danger'}>
-                      {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
-                      {Number(item.value).toFixed(2)}%
-                    </Text>
-                  ) : (
-                    <Text>{Number(item.value).toFixed(2)}$</Text>
-                  )}
-                </span>
-              </List.Item>
-            )}
+      <div className="asset-cards-grid">
+        {paginatedAssets.map((asset) => (
+          <Card key={asset.id} variant="borderless">
+            <Statistic
+              title={capitalize(asset.name)}
+              value={asset.totalAmount}
+              precision={2}
+              style={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
+            />
+
+            <List
+              size="small"
+              dataSource={[
+                { title: 'Total Profit', value: asset.totalProfit, withTag: true },
+                { title: 'Asset Amount', value: asset.amount, isPlain: true },
+                { title: 'Difference', value: asset.growPercent },
+              ]}
+              renderItem={(item) => (
+                <List.Item>
+                  <Text>{item.title}</Text>
+                  <span>
+                    {item.withTag && (
+                      <Tag color={asset.grow ? 'green' : 'red'}>
+                        {asset.growPercent}%
+                      </Tag>
+                    )}
+                    {item.isPlain ? (
+                      <Text type={asset.grow ? 'success' : 'danger'}>
+                        {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
+                        {Number(item.value).toFixed(2)}
+                      </Text>
+                    ) : item.title === 'Difference' ? (
+                      <Text type={asset.grow ? 'success' : 'danger'}>
+                        {asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}{' '}
+                        {Number(item.value).toFixed(2)}%
+                      </Text>
+                    ) : (
+                      <Text>{Number(item.value).toFixed(2)}$</Text>
+                    )}
+                  </span>
+                </List.Item>
+              )}
+            />
+          </Card>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="asset-cards-pagination">
+          <Pagination
+            current={page}
+            total={assets.length}
+            pageSize={PAGE_SIZE}
+            onChange={setPage}
+            showSizeChanger={false}
+            showTotal={(total, range) =>
+              `${range[0]}-${range[1]} of ${total}`
+            }
           />
-        </Card>
-      ))}
-      <Card variant="borderless">
-        <Statistic
-          title="Idle"
-          value={9.3}
-          precision={2}
-          styles={{
-            content: {
-              color: '#cf1322',
-            },
-          }}
-          prefix={<ArrowDownOutlined />}
-          suffix="%"
-        />
-      </Card>
+        </div>
+      )}
     </div>
   );
 }

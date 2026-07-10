@@ -1,12 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
-import CryptoContextProvider from './context/cryprto-context.jsx';
+import CryptoProvider from './context/CryptoProvider';
+import SettingsProvider from './context/SettingsProvider';
 import './index.css';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CryptoContextProvider>
-      <App />
-    </CryptoContextProvider>
+    <SettingsProvider>
+      <CryptoProvider>
+        <App />
+      </CryptoProvider>
+    </SettingsProvider>
   </StrictMode>,
 );

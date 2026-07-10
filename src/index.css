@@ -8,25 +8,46 @@
   min-height: 100vh;
 }
 
+.ant-layout-sider {
+  transition: width 0.2s ease;
+}
 
 .logo {
   height: 32px;
   margin: 16px;
+  transition: all 0.2s ease;
 }
-
 
 .header {
   width: 100%;
-  text-align: center;
-  height: 60px;
-  padding: 0;
+  height: auto;
+  min-height: 60px;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.coin-select {
+  flex: 1;
+  max-width: 320px;
+  min-width: 0;
+}
+
+.mobile-menu-btn {
+  flex-shrink: 0;
+  font-size: 18px;
+}
 
 .menu-button {
   font-size: 16px;
@@ -34,22 +55,21 @@
   height: 64px;
 }
 
-
 .content {
-  margin: 24px 16px;
-  padding: 24px;
+  margin: 16px 12px;
+  padding: 16px;
   min-height: calc(100vh - 112px);
-}
-
-/* index.css или App.css — добавь в конец */
-
-.content {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* Центрируем спин на весь экран загрузки */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .loader {
   display: flex;
   align-items: center;
@@ -58,7 +78,6 @@
   width: 100%;
 }
 
-/* Карточки активов */
 .ant-card {
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -68,15 +87,100 @@
   padding: 20px 24px;
 }
 
-/* Список внутри карточки */
+.dashboard-card {
+  min-height: 360px;
+  border-radius: 12px;
+}
+
+.dashboard-card .ant-card-body {
+  padding: 16px;
+}
+
+/* Asset cards grid with pagination */
+.asset-cards-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.asset-cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.asset-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.asset-cards-pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+/* Chart legend scrollable */
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chart-legend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chart-legend-label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Settings rows */
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+/* Asset list (legacy) */
 .asset-list {
   list-style: none;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+[data-theme='dark'] .asset-list {
+  border-top-color: rgba(255, 255, 255, 0.12);
 }
 
 .asset-list-item {
@@ -86,13 +190,60 @@
   font-size: 14px;
 }
 
-.asset-list-item span:first-child {
-  color: rgba(0, 0, 0, 0.45);
+/* Tablet */
+@media (max-width: 992px) {
+  .content {
+    margin: 12px 8px;
+    padding: 12px;
+  }
+
+  .dashboard-card {
+    min-height: auto;
+  }
+
+  .asset-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
 }
 
-.asset-list-item span:last-child {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
+/* Mobile */
+@media (max-width: 576px) {
+  .header {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .coin-select {
+    max-width: none;
+  }
+
+  .content {
+    margin: 8px 4px;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .page-container {
+    gap: 16px;
+  }
+
+  .ant-card-body {
+    padding: 14px 16px;
+  }
+
+  .asset-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-legend {
+    max-height: 240px;
+  }
+
+  .dashboard-card {
+    min-height: unset;
+  }
 }

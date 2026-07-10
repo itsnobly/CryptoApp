@@ -8,7 +8,12 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({
+  collapsed,
+  setCollapsed,
+  selectedPage,
+  onSelect,
+}) {
   const items = [
     {
       key: 'dashboard',
@@ -63,7 +68,8 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       <Menu
         theme="dark"
         mode="inline"
-        defaultSelectedKeys={['dashboard']}
+        selectedKeys={[selectedPage]}
+        onSelect={({ key }) => onSelect?.(key)}
         items={items}
       />
     </>
