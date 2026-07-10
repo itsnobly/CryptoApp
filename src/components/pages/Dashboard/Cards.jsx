@@ -7,44 +7,59 @@ export default function Cards() {
     (sum, asset) => sum + (asset.totalAmount || 0),
     0,
   );
-  const totalProfit = assets.reduce(
-    (sum, asset) => sum + (asset.totalProfit || 0),
+  const totalInvested = assets.reduce(
+    (sum, asset) => sum + (asset.amount * asset.price || 0),
     0,
   );
   const totalCount = assets.length;
+  
+  const roi = totalInvested > 0 ? ((totalAmount - totalInvested) / totalInvested) * 100 : 0;
 
   return (
     <Row gutter={[12, 12]}>
-      <Col xs={24} sm={12} md={8}>
+      <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
             title="Assets"
             value={totalCount}
-            valueStyle={{ fontSize: '24px' }}
+            styles={{ content: { fontSize: '24px' } }}
           />
         </Card>
       </Col>
-      <Col xs={24} sm={12} md={8}>
+      <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
             title="Total Value"
             value={totalAmount}
             precision={2}
-            suffix="$"
-            valueStyle={{ fontSize: '24px' }}
+            prefix="$"
+            styles={{ content: { fontSize: '24px' } }}
           />
         </Card>
       </Col>
-      <Col xs={24} sm={12} md={8}>
+      <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
-            title="Profit"
-            value={totalProfit}
+            title="Invested"
+            value={totalInvested}
             precision={2}
-            suffix="$"
-            valueStyle={{
-              fontSize: '24px',
-              color: totalProfit >= 0 ? '#3f8600' : '#cf1322',
+            prefix="$"
+            styles={{ content: { fontSize: '24px' } }}
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={6}>
+        <Card style={{ borderRadius: '12px' }}>
+          <Statistic
+            title="ROI"
+            value={roi}
+            precision={2}
+            suffix="%"
+            styles={{
+              content: {
+                fontSize: '24px',
+                color: roi >= 0 ? '#3f8600' : '#cf1322',
+              }
             }}
           />
         </Card>

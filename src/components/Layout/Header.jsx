@@ -92,7 +92,15 @@ export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
         />
       </div>
 
-      <Button type="primary" onClick={() => setDrawer(true)}>
+      <Button 
+        type="primary" 
+        onClick={() => setDrawer(true)}
+        style={{ 
+          borderRadius: '8px',
+          fontWeight: 500,
+          height: '40px',
+          padding: '0 20px',
+        }}>
         {isMobile ? 'Add' : 'Add Assets'}
       </Button>
 

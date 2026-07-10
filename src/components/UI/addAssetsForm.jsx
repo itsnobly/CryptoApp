@@ -52,10 +52,11 @@ export default function AddAssetsForm({ onClose }) {
       total: assetTotal,
     };
 
-    addAsset({
+    const assetToAdd = {
       id: coin.id,
       name: coin.name,
       symbol: coin.symbol,
+      icon: coin.icon,
       amount: assetAmount,
       price: assetPrice,
       date: values.date,
@@ -63,11 +64,18 @@ export default function AddAssetsForm({ onClose }) {
       currentPrice,
       totalProfit: assetProfit,
       grow: assetGrow,
-      growPercent,
-    });
+      growPercent: parseFloat(growPercent),
+    };
+    
+    addAsset(assetToAdd);
 
     setAddedAsset(asset);
     setSubmitted(true);
+    
+    // Close drawer after successful add
+    if (onClose) {
+      onClose();
+    }
   };
 
   const resetCoin = () => {

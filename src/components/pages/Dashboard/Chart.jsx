@@ -50,16 +50,22 @@ export default function Chart() {
   );
 
   const segments = useMemo(() => {
-    const chartAssets = assets.filter((asset) => asset.totalAmount > 0);
-    if (total <= 0 || chartAssets.length === 0) return [];
+    const chartAssets = assets.filter((asset) => asset.amount > 0);
+    
+    if (chartAssets.length === 0) return [];
 
-    const raw = chartAssets.map((asset) => ({
-      id: asset.id,
-      label: asset.name,
-      value: Number(((asset.totalAmount / total) * 100).toFixed(2)),
-      amount: asset.totalAmount,
-      color: COLORS[asset.id] || COLORS.default,
-    }));
+    const raw = chartAssets.map((asset) => {
+      const assetValue = asset.totalAmount || (asset.amount * (asset.currentPrice || asset.price || 1));
+      const percentage = total > 0 ? (assetValue / total) * 100 : 100;
+      const value = Number(Math.round((percentage + Number.EPSILON) * 100) / 100);
+      return {
+        id: asset.id,
+        label: asset.name || asset.id,
+        value: Math.max(0.1, value),
+        amount: Math.max(0, assetValue),
+        color: COLORS[asset.id] || COLORS.default,
+      };
+    });
     return groupSegments(raw);
   }, [assets, total]);
 
@@ -83,6 +89,11 @@ export default function Chart() {
     currentAngle += angle;
   });
 
+  // Ensure full circle for single asset
+  if (chartData.length === 1 && chartData[0].value === 100) {
+    chartData[0].endAngle = 360;
+  }
+
   const radius = 80;
   const cx = 100;
   const cy = 100;
@@ -96,6 +107,16 @@ export default function Chart() {
   };
 
   const arcPath = (startAngle, endAngle) => {
+    // Handle full circle case
+    if (endAngle - startAngle >= 359.9) {
+      return [
+        `M ${cx} ${cy - radius}`,
+        `A ${radius} ${radius} 0 1 1 ${cx} ${cy + radius}`,
+        `A ${radius} ${radius} 0 1 1 ${cx} ${cy - radius}`,
+        `Z`,
+      ].join(' ');
+    }
+    
     const start = polarToCartesian(startAngle);
     const end = polarToCartesian(endAngle);
     const largeArc = endAngle - startAngle > 180 ? 1 : 0;

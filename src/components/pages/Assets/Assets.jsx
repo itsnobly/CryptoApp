@@ -1,4 +1,4 @@
-import { Row, Col, Typography, Card } from 'antd';
+import { Row, Col, Typography, Card, Empty } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
 import Portfolio from './Portfolio';
 import CoinInfo from './CoinInfo';
@@ -13,6 +13,20 @@ export default function Assets() {
   );
   const profit = assets.reduce((sum, item) => sum + (item.totalProfit || 0), 0);
   const assetCount = assets.length;
+
+  if (assets.length === 0) {
+    return (
+      <div className="page-container">
+        <Title level={3}>Assets</Title>
+        <Card>
+          <Empty
+            description="No assets in portfolio. Add your first asset to get started."
+            style={{ padding: '40px 0' }}
+          />
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">

@@ -6,6 +6,8 @@ import {
   WalletOutlined,
   HistoryOutlined,
   SettingOutlined,
+  LineChartOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 
 export default function Sidebar({
@@ -29,6 +31,16 @@ export default function Sidebar({
       key: 'history',
       icon: <HistoryOutlined />,
       label: 'History',
+    },
+    {
+      key: 'analytics',
+      icon: <LineChartOutlined />,
+      label: 'Analytics',
+    },
+    {
+      key: 'watchlist',
+      icon: <StarOutlined />,
+      label: 'Watchlist',
     },
     {
       key: 'settings',

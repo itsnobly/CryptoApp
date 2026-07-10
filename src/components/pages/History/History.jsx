@@ -1,27 +1,53 @@
-import { Table, Typography } from 'antd';
+import { Table, Typography, Tag, Input, Select, Empty, Card } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { SearchOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 
 export default function History() {
-  const { assets } = useCrypto();
+  const { transactions } = useCrypto();
+  const [searchText, setSearchText] = useState('');
+  const [filterType, setFilterType] = useState('all');
 
-  const dataSource = assets.map((asset, index) => ({
-    key: asset.id || index,
-    date: asset.date ? asset.date.toString().slice(0, 10) : 'N/A',
-    coin: asset.name || asset.id,
-    amount: asset.amount,
-    price: asset.price,
-    status: 'Buy',
-  }));
+  const filteredTransactions = transactions.filter((tx) => {
+    const matchesSearch =
+      tx.coinName?.toLowerCase().includes(searchText.toLowerCase()) ||
+      tx.symbol?.toLowerCase().includes(searchText.toLowerCase());
+    const matchesType = filterType === 'all' || tx.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  const dataSource = filteredTransactions
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map((tx, index) => ({
+      key: tx.id || index,
+      date: tx.date ? dayjs(tx.date).format('DD.MM.YYYY HH:mm') : 'N/A',
+      type: tx.type,
+      coin: tx.coinName || tx.coinId,
+      amount: tx.amount,
+      price: tx.price,
+      total: tx.total,
+      profit: tx.profit,
+    }));
 
   const columns = [
     {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
-      width: 100,
-      responsive: ['md'],
+      width: 150,
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      width: 80,
+      render: (type) => (
+        <Tag color={type === 'BUY' ? 'green' : 'red'}>{type}</Tag>
+      ),
     },
     {
       title: 'Coin',
@@ -34,40 +60,88 @@ export default function History() {
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
-      responsive: ['sm'],
+      render: (value, record) => `${value.toFixed(6)} ${record.coin}`,
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
       width: 100,
-      responsive: ['md'],
-      render: (value) => `$${Number(value).toFixed(2)}`,
+      render: (value) => `$${value.toFixed(2)}`,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: 80,
-      responsive: ['lg'],
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
+      width: 100,
+      render: (value) => `$${value.toFixed(2)}`,
+    },
+    {
+      title: 'Profit',
+      dataIndex: 'profit',
+      key: 'profit',
+      width: 100,
+      render: (value) =>
+        value !== undefined ? (
+          <Tag color={value >= 0 ? 'success' : 'error'}>
+            {value >= 0 ? '+' : ''}${value.toFixed(2)}
+          </Tag>
+        ) : (
+          '-'
+        ),
     },
   ];
 
   return (
     <div className="page-container">
-      <Title level={3}>History</Title>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        pagination={{
-          pageSize: 8,
-          showSizeChanger: true,
-          pageSizeOptions: ['8', '15', '30'],
-          showTotal: (total) => `${total} transactions`,
-        }}
-        scroll={{ x: 600, y: 400 }}
-        size="small"
-      />
+      <Title level={3}>Transaction History</Title>
+      {transactions.length === 0 ? (
+        <Card>
+          <Empty
+            description="No transactions yet. Add assets to see your transaction history."
+            style={{ padding: '40px 0' }}
+          />
+        </Card>
+      ) : (
+        <>
+          <div style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Input
+              placeholder="Search transactions..."
+              prefix={<SearchOutlined />}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ maxWidth: 300 }}
+            />
+            <Select
+              value={filterType}
+              onChange={setFilterType}
+              style={{ width: 120 }}
+              options={[
+                { label: 'All', value: 'all' },
+                { label: 'BUY', value: 'BUY' },
+                { label: 'SELL', value: 'SELL' },
+              ]}
+            />
+          </div>
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            pagination={
+              dataSource.length > 10
+                ? {
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: [10, 25, 50],
+                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} transactions`,
+                    position: 'bottomCenter',
+                  }
+                : false
+            }
+            scroll={{ x: 800, y: 400 }}
+            size="small"
+          />
+        </>
+      )}
     </div>
   );
 }

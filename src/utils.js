@@ -6,7 +6,9 @@
  */
 export function percentDifference(a, b) {
   if (a === 0 && b === 0) return 0;
-  return Number((Math.abs((a - b) / ((a + b) / 2)) * 100).toFixed(2));
+  if (a === 0) return b > 0 ? 100 : -100;
+  const result = ((b - a) / a) * 100;
+  return Number(Math.round((result + Number.EPSILON) * 100) / 100);
 }
 
 /**
@@ -26,13 +28,14 @@ export function capitalize(str) {
  * @returns {string} Отформатированная строка
  */
 export function formatCurrency(value, currency = 'USD') {
-  if (typeof value !== 'number' || Number.isNaN(value)) return '$0.00';
+  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '$0.00';
+  const rounded = Math.round((value + Number.EPSILON) * 100) / 100;
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(value);
+  }).format(rounded);
 }
 
 /**
@@ -42,11 +45,13 @@ export function formatCurrency(value, currency = 'USD') {
  * @returns {string} Отформатированное число
  */
 export function formatNumber(value, fractionDigits = 2) {
-  if (typeof value !== 'number' || Number.isNaN(value)) return '0';
+  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '0';
+  const multiplier = Math.pow(10, fractionDigits);
+  const rounded = Math.round((value + Number.EPSILON) * multiplier) / multiplier;
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
-  }).format(value);
+  }).format(rounded);
 }
 
 /**
@@ -55,7 +60,7 @@ export function formatNumber(value, fractionDigits = 2) {
  * @returns {string} Сокращённая запись
  */
 export function abbreviateNumber(value) {
-  if (typeof value !== 'number') return '0';
+  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return '0';
   const absValue = Math.abs(value);
 
   if (absValue >= 1e9) {

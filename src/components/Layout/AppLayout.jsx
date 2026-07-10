@@ -76,7 +76,7 @@ export default function AppLayout() {
           open={mobileDrawerOpen}
           onClose={() => setMobileDrawerOpen(false)}
           styles={{ body: { padding: 0, background: '#001529' } }}
-          width={260}
+          size={260}
           closable={false}>
           {sidebarContent}
         </Drawer>

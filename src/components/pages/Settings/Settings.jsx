@@ -11,7 +11,7 @@ export default function Settings() {
     <div className="page-container">
       <Title level={3}>Settings</Title>
       <Card>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
           <div className="settings-row">
             <Text>Dark mode</Text>
             <Switch checked={darkMode} onChange={setDarkMode} />

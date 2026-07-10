@@ -1,0 +1,168 @@
+import { Row, Col, Card, Statistic, Typography, Table, Tag } from 'antd';
+import { useCrypto } from '../../../context/crypto-context';
+import { formatCurrency, formatPercent } from '../../../utils';
+
+const { Title } = Typography;
+
+export default function Analytics() {
+  const { assets } = useCrypto();
+
+  const totalInvested = assets.reduce(
+    (sum, asset) => sum + (asset.amount * asset.price || 0),
+    0,
+  );
+  const totalValue = assets.reduce(
+    (sum, asset) => sum + (asset.totalAmount || 0),
+    0,
+  );
+  const totalProfit = assets.reduce(
+    (sum, asset) => sum + (asset.totalProfit || 0),
+    0,
+  );
+  const roi = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0;
+
+  const bestPerformer = assets.length > 0
+    ? assets.reduce((best, asset) =>
+        (asset.growPercent || 0) > (best.growPercent || 0) ? asset : best,
+      )
+    : null;
+
+  const worstPerformer = assets.length > 0
+    ? assets.reduce((worst, asset) =>
+        (asset.growPercent || 0) < (worst.growPercent || 0) ? asset : worst,
+      )
+    : null;
+
+  const performanceColumns = [
+    {
+      title: 'Coin',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'ROI',
+      dataIndex: 'growPercent',
+      key: 'growPercent',
+      render: (value) => (
+        <Tag color={value >= 0 ? 'success' : 'error'}>
+          {formatPercent(value)}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Profit',
+      dataIndex: 'totalProfit',
+      key: 'totalProfit',
+      render: (value) => formatCurrency(value),
+    },
+  ];
+
+  const performanceData = assets
+    .map((asset) => ({
+      key: asset.id,
+      name: asset.name,
+      growPercent: asset.growPercent || 0,
+      totalProfit: asset.totalProfit || 0,
+    }))
+    .sort((a, b) => b.growPercent - a.growPercent);
+
+  if (assets.length === 0) {
+    return (
+      <div className="page-container">
+        <Title level={3}>Analytics</Title>
+        <Card>
+          <p style={{ textAlign: 'center', color: '#999' }}>
+            Add assets to see analytics
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page-container">
+      <Title level={3}>Analytics</Title>
+      
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic title="Total Invested" value={totalInvested} precision={2} prefix="$" />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic title="Current Value" value={totalValue} precision={2} prefix="$" />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Total Profit"
+              value={totalProfit}
+              precision={2}
+              prefix="$"
+              valueStyle={{ color: totalProfit >= 0 ? '#3f8600' : '#cf1322' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="ROI"
+              value={roi}
+              precision={2}
+              suffix="%"
+              valueStyle={{ color: roi >= 0 ? '#3f8600' : '#cf1322' }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} md={12}>
+          <Card title="Best Performer">
+            {bestPerformer ? (
+              <div>
+                <Title level={4}>{bestPerformer.name}</Title>
+                <Statistic
+                  value={bestPerformer.growPercent || 0}
+                  precision={2}
+                  suffix="%"
+                  valueStyle={{ color: '#3f8600', fontSize: '32px' }}
+                />
+              </div>
+            ) : (
+              <p style={{ color: '#999' }}>No data</p>
+            )}
+          </Card>
+        </Col>
+        <Col xs={24} md={12}>
+          <Card title="Worst Performer">
+            {worstPerformer ? (
+              <div>
+                <Title level={4}>{worstPerformer.name}</Title>
+                <Statistic
+                  value={worstPerformer.growPercent || 0}
+                  precision={2}
+                  suffix="%"
+                  valueStyle={{ color: '#cf1322', fontSize: '32px' }}
+                />
+              </div>
+            ) : (
+              <p style={{ color: '#999' }}>No data</p>
+            )}
+          </Card>
+        </Col>
+      </Row>
+
+      <Card title="Performance by Asset">
+        <Table
+          columns={performanceColumns}
+          dataSource={performanceData}
+          pagination={false}
+          size="small"
+        />
+      </Card>
+    </div>
+  );
+}

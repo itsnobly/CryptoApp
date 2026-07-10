@@ -16,7 +16,7 @@ export default function CoinInfoModal({ coin, open, onOk, onCancel }) {
       onOk={onOk}
       onCancel={onCancel}
       width={700}>
-      <Space direction="vertical" style={{ width: '100%' }} size="large">
+      <Space orientation="vertical" style={{ width: '100%' }} size="large">
         <div style={{ textAlign: 'center' }}>
           <img src={coin.icon} alt={coin.name} width={80} height={80} />
         </div>

@@ -1,516 +1,134 @@
-# 🚀 CryptoApp - Crypto Portfolio Management
+# CryptoApp - Crypto Portfolio Management
 
-Современное веб-приложение для управления портфелем криптовалют с отслеживанием цен, аналитикой и управлением активами в реальном времени.
+Modern web application for managing cryptocurrency portfolios with real-time price tracking, analytics, and asset management.
 
-## ✨ Возможности
+## Features
 
-- 📊 **Управление портфелем** - Добавляйте, редактируйте и удаляйте криптовалютные активы
-- 📈 **Аналитика** - Отслеживайте прибыль/убыток и процентные изменения
-- 💰 **Цены в реальном времени** - Получайте актуальные цены криптовалют
-- 🎨 **Интуитивный интерфейс** - Современный дизайн на основе Ant Design
-- 📱 **Адаптивный дизайн** - Работает на всех устройствах
-- 🔐 **Надёжная архитектура** - React Context для управления состоянием
-- ⚡ **Быстрая разработка** - Построено на Vite для максимальной производительности
+- **Portfolio Management** - Add, edit, and delete cryptocurrency assets
+- **Analytics** - Track profit/loss and percentage changes
+- **Real-time Prices** - Get current cryptocurrency prices
+- **Intuitive Interface** - Modern design based on Ant Design
+- **Responsive Design** - Works on all devices
+- **Reliable Architecture** - React Context for state management
+- **Fast Development** - Built with Vite for maximum performance
 
-## 📋 Содержание
+## Quick Start
 
-- [Быстрый старт](#быстрый-старт)
-- [Установка](#установка)
-- [Использование](#использование)
-- [Архитектура проекта](#архитектура-проекта)
-- [API](#api)
-- [Развертывание](#развертывание)
-- [Проблемы и решения](#проблемы-и-решения)
-- [Лицензия](#лицензия)
-
-## 🎯 Быстрый старт
-
-### Требования
+### Requirements
 
 - Node.js 16+
-- npm или yarn
+- npm or yarn
 
-### Установка
+### Installation
 
-1. **Клонируйте репозиторий**
-
+1. Clone the repository:
 ```bash
 git clone https://github.com/itsnobly/CryptoApp.git
 cd CryptoApp
 ```
 
-2. **Установите зависимости**
-
+2. Install dependencies:
 ```bash
 npm install
-# или
-yarn install
 ```
 
-3. **Запустите приложение в режиме разработки**
-
+3. Run the application:
 ```bash
 npm run dev
-# или
-yarn dev
 ```
 
-Приложение откроется на `http://localhost:5173`
+The application will open at `http://localhost:5173`
 
-## 💻 Использование
+## Usage
 
-### Основные команды
+### Main Commands
 
 ```bash
-# Запуск в режиме разработки
+# Development mode
 npm run dev
 
-# Сборка для production
+# Production build
 npm run build
 
-# Локальный preview build'а
+# Preview production build
 npm run preview
 
-# Проверка кода линтером
+# Lint code
 npm run lint
 ```
 
-### Основной функционал
+### How to Use
 
-#### 1. Просмотр портфеля
+1. **View Portfolio** - Open the app to see all your assets with current prices and profit/loss
+2. **Add Assets** - Click "Add Assets" button, select cryptocurrency, enter amount and buy price
+3. **View Crypto Info** - Select a coin from the dropdown in the header to see detailed information
+4. **Track Statistics** - View total portfolio value, profit/loss, and percentage changes on the dashboard
 
-Откройте приложение - вы увидите список всех ваших активов с текущей ценой и прибылью/убытком.
-
-#### 2. Добавление новых активов
-
-- Нажмите кнопку **"Add Assets"**
-- Выберите криптовалюту из выпадающего списка
-- Введите количество и цену покупки
-- Нажмите "Add"
-
-#### 3. Просмотр информации о криптовалюте
-
-- Выберите монету из выпадающего меню в заголовке
-- Откроется модальное окно с подробной информацией
-
-#### 4. Отслеживание статистики
-
-- Смотрите общую стоимость портфеля на главной странице
-- Отслеживайте процент роста/падения
-- Анализируйте данные на графике
-
-## 🏗️ Архитектура проекта
+## Project Structure
 
 ```
 src/
-├── api.js                           # API слой с функциями получения данных
-├── App.jsx                          # Главный компонент приложения
-├── data.js                          # Тестовые данные криптовалют
-├── main.jsx                         # Точка входа приложения
-├── utils.js                         # Утилиты для форматирования и расчётов
-├── index.css                        # Глобальные стили
-│
-├── assets/                          # Статические ресурсы
-│
+├── api.js                    # API layer for fetching data
+├── App.jsx                   # Main application component
+├── data.js                   # Cryptocurrency data
+├── main.jsx                  # Application entry point
+├── utils.js                  # Utility functions for formatting
+├── index.css                 # Global styles
 ├── components/
-│   ├── Layout/
-│   │   ├── AppLayout.jsx           # Основной layout приложения
-│   │   ├── Content.jsx             # Главное содержимое
-│   │   ├── Header.jsx              # Заголовок с поиском криптовалют
-│   │   ├── Sidebar.jsx             # Боковая навигация
-│   │   └── CardContent.jsx         # Контейнер для контента
-│   │
-│   ├── pages/
-│   │   ├── Dashboard/              # Главная страница с статистикой
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Cards.jsx           # Карточки статистики
-│   │   │   ├── Chart.jsx           # Диаграмма портфеля
-│   │   │   └── Statistics.jsx      # Статистика активов
-│   │   │
-│   │   ├── Assets/                 # Управление активами
-│   │   │   ├── Assets.jsx
-│   │   │   ├── AddAssetsForm.jsx   # Форма добавления активов
-│   │   │   ├── CoinInfo.jsx        # Информация о монете
-│   │   │   └── Portfolio.jsx       # Таблица портфеля
-│   │   │
-│   │   └── History/                # История транзакций
-│   │       ├── History.jsx
-│   │       └── TransactionsList.jsx
-│   │
-│   ├── Settings/                   # Настройки приложения
-│   │   └── Settings.jsx
-│   │
-│   └── UI/                          # Переиспользуемые UI компоненты
-│       ├── CoinInfoModal.jsx       # Модальное окно информации о монете
-│       ├── AssetsInfoModal.jsx     # Модальное окно активов
-│       ├── AssetAddedResult.jsx    # Результат добавления актива
-│       ├── addAssetsForm.jsx       # Компонент формы
-│       └── FullscreenLoader.jsx    # Загрузчик на полный экран
-│
-├── context/
-│   ├── crypto-context.js           # Определение контекста
-│   └── cryprto-context.jsx         # Провайдер контекста (основной)
-│
-└── features/
-    └── crypto/                     # Фича криптовалют
-        ├── crypto.service.js       # Сервис работы с данными
-        ├── AddAssetsForm.jsx
-        └── CoinInfoModal.jsx
+│   ├── Layout/               # Layout components
+│   ├── pages/               # Page components (Dashboard, Assets, History)
+│   └── UI/                  # Reusable UI components
+├── context/                 # React Context providers
+└── features/               # Feature-specific components
 ```
 
-## 🔌 API
+## Data Source
 
-### Файл: `src/api.js`
+The application uses data from the CoinStats API (https://coinstats.app). Currently, it includes a local dataset of popular cryptocurrencies for demonstration purposes.
 
-#### `fetchCrypto()`
+## Key Components
 
-Получает список всех доступных криптовалют.
+- **Dashboard** - Overview of portfolio with charts and statistics
+- **Assets** - Detailed portfolio table with profit/loss tracking
+- **History** - Transaction history with pagination
+- **Add Assets Form** - Form to add new cryptocurrency assets
 
-```javascript
-import { fetchCrypto } from './api';
+## Deployment
 
-const data = await fetchCrypto();
-console.log(data.result); // Array of crypto objects
-```
-
-**Возвращает:**
-
-```javascript
-{
-  result: [
-    {
-      id: 'bitcoin',
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      price: 44870.39,
-      icon: 'https://...',
-      // ... другие поля
-    },
-    // ... больше криптовалют
-  ];
-}
-```
-
-#### `fetchAssets()`
-
-Получает список активов пользователя.
-
-```javascript
-const assets = await fetchAssets();
-```
-
-**Возвращает:**
-
-```javascript
-[
-  {
-    id: 'bitcoin',
-    amount: 0.5,
-    price: 40000,
-  },
-  // ... больше активов
-];
-```
-
-#### `fetchCryptoById(id)`
-
-Получает информацию о конкретной криптовалюте.
-
-```javascript
-const bitcoin = await fetchCryptoById('bitcoin');
-```
-
-### Контекст: `src/context/cryprto-context.jsx`
-
-#### Значения контекста:
-
-```javascript
-{
-  // Состояние
-  loading: boolean,        // Идёт ли загрузка данных
-  crypto: array,          // Массив криптовалют
-  assets: array,          // Массив активов
-  error: string|null,     // Ошибка загрузки (если есть)
-
-  // Методы
-  addAsset(asset),        // Добавить новый актив
-  removeAsset(assetId),   // Удалить актив
-  updateAsset(id, updates), // Обновить актив
-  refetchData()           // Перезагрузить данные
-}
-```
-
-### Утилиты: `src/utils.js`
-
-#### `formatCurrency(value, currency = 'USD')`
-
-Форматирует число как валюту.
-
-```javascript
-formatCurrency(1234.567); // '$1,234.57'
-```
-
-#### `formatNumber(value, fractionDigits = 2)`
-
-Форматирует число с разделителями.
-
-```javascript
-formatNumber(1000000); // '1,000,000.00'
-```
-
-#### `abbreviateNumber(value)`
-
-Сокращает большие числа (K, M, B).
-
-```javascript
-abbreviateNumber(1500000); // '1.50M'
-```
-
-#### `percentDifference(a, b)`
-
-Вычисляет процентную разницу.
-
-```javascript
-percentDifference(100, 150); // 40.0
-```
-
-#### `formatPercent(value)`
-
-Форматирует процент со знаком.
-
-```javascript
-formatPercent(5.5); // '+5.50%'
-```
-
-#### `getPriceChangeColor(value)`
-
-Возвращает цвет в зависимости от знака.
-
-```javascript
-getPriceChangeColor(10); // 'green'
-getPriceChangeColor(-10); // 'red'
-```
-
-        ## 📦 Развертывание
-
-### Подготовка к production
-
-1. **Проверьте код линтером:**
-
-```bash
-npm run lint
-```
-
-2. **Создайте production build:**
+### Production Build
 
 ```bash
 npm run build
 ```
 
-Это создаст папку `dist/` с оптимизированным кодом.
+This creates a `dist/` folder with optimized code.
 
-### Развертывание на Vercel
-
-1. **Установите Vercel CLI:**
+### Deploy to Vercel
 
 ```bash
 npm install -g vercel
-```
-
-2. **Разверните приложение:**
-
-```bash
 vercel
 ```
 
-Следуйте инструкциям интерфейса.
+### Deploy to Netlify
 
-### Развертывание на Netlify
+1. Connect your repository to Netlify
+2. Build command: `npm run build`
+3. Publish directory: `dist`
 
-1. **Через веб-интерфейс:**
-   - Перейдите на https://netlify.com
-   - Нажмите "New site from Git"
-   - Выберите ваш репозиторий
-   - Build command: `npm run build`
-   - Publish directory: `dist`
+## Troubleshooting
 
-2. **Через CLI:**
+**Data not loading:** Check browser console for errors, ensure `api.js` is accessible
 
-```bash
-npm install -g netlify-cli
-npm run build
-netlify deploy --prod --dir=dist
-```
+**Styles not applying:** Run `npm install` and `npm run dev`
 
-### Развертывание на GitHub Pages
+**Context error:** Ensure components are wrapped in `<CryptoContextProvider>`
 
-1. **Обновите `vite.config.js`:**
+## License
 
-```javascript
-export default {
-  base: '/CryptoApp/',
-  // ... остальная конфигурация
-};
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-2. **Создайте GitHub Actions workflow** (`.github/workflows/deploy.yml`):
-
-```yaml
-name: Deploy
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-      - run: npm install
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-```
-
-3. **Включите GitHub Pages:**
-   - Перейдите в Settings репозитория
-   - Выберите "Pages"
-   - Выберите ветку `gh-pages`
-
-### Развертывание на Docker
-
-1. **Создайте `Dockerfile`:**
-
-```dockerfile
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-2. **Создайте `nginx.conf`:**
-
-```nginx
-server {
-  listen 80;
-  location / {
-    root /usr/share/nginx/html;
-    try_files $uri $uri/ /index.html;
-  }
-}
-```
-
-3. **Соберите и запустите:**
-
-```bash
-docker build -t crypto-app .
-docker run -p 80:80 crypto-app
-```
-
-## 🐛 Проблемы и решения
-
-### Проблема: Данные не загружаются
-
-**Решение:**
-
-1. Проверьте консоль браузера на ошибки
-2. Убедитесь, что `api.js` доступен
-3. Проверьте, что `data.js` содержит данные
-
-### Проблема: Стили не применяются
-
-**Решение:**
-
-```bash
-npm install
-npm run dev
-```
-
-### Проблема: Ошибка "useCrypto must be used within CryptoProvider"
-
-**Решение:** Убедитесь, что компонент обёрнут в `<CryptoContextProvider>`
-
-### Проблема: Медленная загрузка
-
-**Решение:**
-
-- Используйте `npm run build` для production
-- Включите кэширование в браузере
-- Оптимизируйте изображения в `assets/`
-
-## 🔧 Обслуживание
-
-### Обновление зависимостей
-
-```bash
-npm update
-npm audit fix
-```
-
-### Оптимизация производительности
-
-```bash
-# Анализируйте размер бандла
-npm run build -- --visualize
-```
-
-### Форматирование кода (с Prettier - опционально)
-
-```bash
-npm install --save-dev prettier
-npm run format
-```
-
-## 📚 Дополнительные ресурсы
-
-- [React Documentation](https://react.dev)
-- [Vite Documentation](https://vitejs.dev)
-- [Ant Design](https://ant.design)
-- [CoinStats API](https://coinstats.app)
-
-## 👥 Вклад
-
-Если вы хотите внести свой вклад:
-
-1. Форкируйте репозиторий
-2. Создайте ветку (`git checkout -b feature/AmazingFeature`)
-3. Сделайте коммит (`git commit -m 'Add some AmazingFeature'`)
-4. Отправьте в ветку (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
-
-## 📄 Лицензия
-
-Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
-
-## ✉️ Контакты
+## Contact
 
 - **GitHub:** [@itsnobly](https://github.com/itsnobly)
 - **Issues:** [GitHub Issues](https://github.com/itsnobly/CryptoApp/issues)
-
----
-
-Спасибо за использование CryptoApp! 🎉
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-# CryptoApp
