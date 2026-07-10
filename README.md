@@ -1,134 +1,290 @@
-# CryptoApp - Crypto Portfolio Management
+# 🚀 CryptoApp — Управление криптовалютным портфелем
 
-Modern web application for managing cryptocurrency portfolios with real-time price tracking, analytics, and asset management.
+Современное веб-приложение для управления криптовалютными активами с отслеживанием стоимости, аналитикой прибыли и удобным управлением портфелем.
 
-## Features
+Проект позволяет добавлять криптовалюты, отслеживать изменения стоимости активов, анализировать прибыль/убыток и получать актуальные данные о рынке.
 
-- **Portfolio Management** - Add, edit, and delete cryptocurrency assets
-- **Analytics** - Track profit/loss and percentage changes
-- **Real-time Prices** - Get current cryptocurrency prices
-- **Intuitive Interface** - Modern design based on Ant Design
-- **Responsive Design** - Works on all devices
-- **Reliable Architecture** - React Context for state management
-- **Fast Development** - Built with Vite for maximum performance
+---
 
-## Quick Start
+## ✨ Возможности
 
-### Requirements
+### 💰 Управление портфелем
 
-- Node.js 16+
-- npm or yarn
+- Добавление криптовалютных активов
+- Указание количества и цены покупки
+- Автоматический расчёт вложенной суммы
+- Расчёт текущей стоимости активов
+- Расчёт прибыли и убытка
+- Редактирование активов
+- Удаление активов
 
-### Installation
+### 📊 Аналитика
 
-1. Clone the repository:
+Dashboard показывает основную информацию о портфеле:
+
+- Общая стоимость портфеля
+- Количество активов
+- Общая прибыль/убыток
+- Процент изменения стоимости
+- Распределение активов в виде графиков
+
+Пример:
+
+```
+Вложено:
+10 000$
+
+Текущая стоимость:
+14 500$
+
+Прибыль:
++4 500$
+```
+
+---
+
+### 📈 Графики
+
+Приложение содержит визуализацию:
+
+- Распределение портфеля (Portfolio Breakdown)
+- Доли каждой криптовалюты
+- Изменение стоимости активов
+- Аналитику прибыли
+
+---
+
+### 🔥 Real-time цены
+
+Данные криптовалют обновляются автоматически:
+
+- Получение актуальных цен через API
+- Автоматическое обновление стоимости портфеля
+- Пересчёт прибыли в зависимости от текущего курса
+
+---
+
+### 📚 История операций
+
+Планируется:
+
+- История покупок
+- История продаж
+- Отслеживание всех изменений портфеля
+- Фильтрация операций
+
+---
+
+### ⭐ Watchlist
+
+Избранные криптовалюты:
+
+- Bitcoin
+- Ethereum
+- Solana
+- Другие монеты
+
+Позволяет следить за ценами без добавления в портфель.
+
+---
+
+## 🛠 Используемые технологии
+
+### Frontend
+
+- React
+- JavaScript
+- Vite
+- Ant Design
+- CSS
+- React Context API
+
+### Работа с данными
+
+- REST API
+- CoinGecko API
+- Асинхронная загрузка данных
+- Автоматическое обновление цен
+
+### Инструменты
+
+- Git
+- GitHub
+- ESLint
+- npm
+
+---
+
+# 📂 Структура проекта
+
+```
+src/
+│
+├── api/
+│   └── API запросы
+│
+├── components/
+│   │
+│   ├── Layout/
+│   │   ├── Header
+│   │   ├── Sidebar
+│   │   └── Content
+│   │
+│   ├── pages/
+│   │   ├── Dashboard
+│   │   │   ├── Cards
+│   │   │   ├── Chart
+│   │   │   └── Statistics
+│   │   │
+│   │   ├── Assets
+│   │   │   ├── AddAssetForm
+│   │   │   ├── Portfolio
+│   │   │   └── CoinInfo
+│   │   │
+│   │   └── History
+│   │       └── Transactions
+│   │
+│   └── UI/
+│       └── Reusable components
+│
+├── context/
+│   ├── crypto-context.jsx
+│   └── CryptoProvider.jsx
+│
+├── utils/
+│   └── formatting functions
+│
+└── main.jsx
+```
+
+---
+
+# ⚙️ Установка
+
+## Требования
+
+- Node.js 18+
+- npm
+
+## Клонирование проекта
+
 ```bash
 git clone https://github.com/itsnobly/CryptoApp.git
+
 cd CryptoApp
 ```
 
-2. Install dependencies:
+## Установка зависимостей
+
 ```bash
 npm install
 ```
 
-3. Run the application:
+## Запуск проекта
+
 ```bash
 npm run dev
 ```
 
-The application will open at `http://localhost:5173`
+Приложение будет доступно:
 
-## Usage
+```
+http://localhost:5173
+```
 
-### Main Commands
+---
+
+# 📦 Основные команды
+
+Запуск разработки:
 
 ```bash
-# Development mode
 npm run dev
+```
 
-# Production build
+Создание production сборки:
+
+```bash
 npm run build
+```
 
-# Preview production build
-npm run preview
+Проверка проекта:
 
-# Lint code
+```bash
 npm run lint
 ```
 
-### How to Use
+---
 
-1. **View Portfolio** - Open the app to see all your assets with current prices and profit/loss
-2. **Add Assets** - Click "Add Assets" button, select cryptocurrency, enter amount and buy price
-3. **View Crypto Info** - Select a coin from the dropdown in the header to see detailed information
-4. **Track Statistics** - View total portfolio value, profit/loss, and percentage changes on the dashboard
+# 🧠 Архитектура
 
-## Project Structure
+Проект построен на компонентном подходе:
 
 ```
-src/
-├── api.js                    # API layer for fetching data
-├── App.jsx                   # Main application component
-├── data.js                   # Cryptocurrency data
-├── main.jsx                  # Application entry point
-├── utils.js                  # Utility functions for formatting
-├── index.css                 # Global styles
-├── components/
-│   ├── Layout/               # Layout components
-│   ├── pages/               # Page components (Dashboard, Assets, History)
-│   └── UI/                  # Reusable UI components
-├── context/                 # React Context providers
-└── features/               # Feature-specific components
+UI Components
+      |
+      ↓
+React Context
+      |
+      ↓
+Business Logic
+      |
+      ↓
+API Layer
 ```
 
-## Data Source
+Context отвечает за:
 
-The application uses data from the CoinStats API (https://coinstats.app). Currently, it includes a local dataset of popular cryptocurrencies for demonstration purposes.
+- состояние криптовалют
+- управление активами
+- загрузку данных
+- обновление цен
 
-## Key Components
+---
 
-- **Dashboard** - Overview of portfolio with charts and statistics
-- **Assets** - Detailed portfolio table with profit/loss tracking
-- **History** - Transaction history with pagination
-- **Add Assets Form** - Form to add new cryptocurrency assets
+# 🔮 Будущие улучшения
 
-## Deployment
+## Авторизация
 
-### Production Build
+Планируется:
 
-```bash
-npm run build
-```
+- Регистрация пользователей
+- Личный профиль
+- Сохранение портфеля в базе данных
 
-This creates a `dist/` folder with optimized code.
+## Web3 интеграция
 
-### Deploy to Vercel
+Возможное добавление:
 
-```bash
-npm install -g vercel
-vercel
-```
+- Подключение MetaMask
+- Импорт активов из кошелька
+- Просмотр истории транзакций
+- Отслеживание on-chain операций
 
-### Deploy to Netlify
+## Дополнительная аналитика
 
-1. Connect your repository to Netlify
-2. Build command: `npm run build`
-3. Publish directory: `dist`
+- Profit/Loss графики
+- История изменения портфеля
+- Расчёт средней цены покупки
+- Риск-анализ активов
 
-## Troubleshooting
+---
 
-**Data not loading:** Check browser console for errors, ensure `api.js` is accessible
+# 🎯 Цель проекта
 
-**Styles not applying:** Run `npm install` and `npm run dev`
+CryptoApp создан как полноценное современное приложение для управления криптовалютным портфелем.
 
-**Context error:** Ensure components are wrapped in `<CryptoContextProvider>`
+Проект демонстрирует работу с:
 
-## License
+- React архитектурой
+- состоянием приложения
+- API интеграциями
+- визуализацией данных
+- финансовой логикой
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+---
 
-## Contact
+## Автор
 
-- **GitHub:** [@itsnobly](https://github.com/itsnobly)
-- **Issues:** [GitHub Issues](https://github.com/itsnobly/CryptoApp/issues)
+GitHub:
+https://github.com/itsnobly
