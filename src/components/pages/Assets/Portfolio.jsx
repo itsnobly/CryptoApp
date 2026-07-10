@@ -2,6 +2,7 @@ import { Table, Tag, Typography, Button, Space, Popconfirm, Input, Modal } from 
 import { EditOutlined, DeleteOutlined, SearchOutlined, DollarOutlined } from '@ant-design/icons';
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { useState } from 'react';
 import SellAssetsForm from '../../UI/SellAssetsForm';
 
@@ -10,6 +11,7 @@ const { Text } = Typography;
 export default function Portfolio() {
   const { assets, removeAsset, updateAsset } = useCrypto();
   const { showMarketPrices } = useSettings();
+  const { t } = useLanguage();
   const [searchText, setSearchText] = useState('');
   const [editingAsset, setEditingAsset] = useState(null);
   const [sellingAsset, setSellingAsset] = useState(null);
@@ -42,14 +44,14 @@ export default function Portfolio() {
 
   const columns = [
     {
-      title: 'Name',
+      title: t('common.name'),
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => (a.name || '').localeCompare(b.name || ''),
       render: (text) => <Text strong>{text}</Text>,
     },
     {
-      title: 'Amount',
+      title: t('history.amount'),
       dataIndex: 'amount',
       key: 'amount',
       sorter: (a, b) => a.amount - b.amount,
@@ -68,7 +70,7 @@ export default function Portfolio() {
         ),
     },
     {
-      title: 'Buy Price',
+      title: t('common.buyPrice'),
       dataIndex: 'price',
       key: 'price',
       sorter: (a, b) => a.price - b.price,
@@ -89,7 +91,7 @@ export default function Portfolio() {
     ...(showMarketPrices
       ? [
           {
-            title: 'Current Price',
+            title: t('common.currentPrice'),
             dataIndex: 'currentPrice',
             key: 'currentPrice',
             render: (value) => `$${value.toFixed(2)}`,
@@ -97,14 +99,14 @@ export default function Portfolio() {
         ]
       : []),
     {
-      title: 'Total Value',
+      title: t('common.totalValue'),
       dataIndex: 'totalAmount',
       key: 'totalAmount',
       sorter: (a, b) => a.totalAmount - b.totalAmount,
       render: (value) => `$${value.toFixed(2)}`,
     },
     {
-      title: 'Profit',
+      title: t('common.profit'),
       dataIndex: 'totalProfit',
       key: 'totalProfit',
       sorter: (a, b) => a.totalProfit - b.totalProfit,
@@ -115,16 +117,16 @@ export default function Portfolio() {
       ),
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       render: (_, record) =>
         editingAsset?.id === record.id ? (
           <Space>
             <Button size="small" type="primary" onClick={handleSaveEdit}>
-              Save
+              {t('common.save')}
             </Button>
             <Button size="small" onClick={() => setEditingAsset(null)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
           </Space>
         ) : (
@@ -160,7 +162,7 @@ export default function Portfolio() {
   return (
     <div>
       <Input
-        placeholder="Search assets..."
+        placeholder={t('assets.search')}
         prefix={<SearchOutlined />}
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
@@ -185,7 +187,7 @@ export default function Portfolio() {
       />
       
       <Modal
-        title={`Sell ${sellingAsset?.name || ''}`}
+        title={`${t('sellAsset.submit')} ${sellingAsset?.name || ''}`}
         open={!!sellingAsset}
         onCancel={() => setSellingAsset(null)}
         footer={null}

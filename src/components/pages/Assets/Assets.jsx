@@ -1,5 +1,6 @@
 import { Row, Col, Typography, Card, Empty } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import Portfolio from './Portfolio';
 import CoinInfo from './CoinInfo';
 
@@ -7,6 +8,7 @@ const { Title } = Typography;
 
 export default function Assets() {
   const { assets } = useCrypto();
+  const { t } = useLanguage();
   const totalValue = assets.reduce(
     (sum, item) => sum + (item.totalAmount || 0),
     0,
@@ -17,10 +19,10 @@ export default function Assets() {
   if (assets.length === 0) {
     return (
       <div className="page-container">
-        <Title level={3}>Assets</Title>
+        <Title level={3}>{t('assets.title')}</Title>
         <Card>
           <Empty
-            description="No assets in portfolio. Add your first asset to get started."
+            description={t('assets.noAssets')}
             style={{ padding: '40px 0' }}
           />
         </Card>
@@ -30,12 +32,12 @@ export default function Assets() {
 
   return (
     <div className="page-container">
-      <Title level={3}>Assets</Title>
+      <Title level={3}>{t('assets.title')}</Title>
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12} md={8}>
           <Card>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              Assets
+              {t('assets.title')}
             </Typography.Text>
             <Typography.Title level={4} style={{ margin: 0 }}>
               {assetCount}
@@ -45,7 +47,7 @@ export default function Assets() {
         <Col xs={24} sm={12} md={8}>
           <Card>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              Total value
+              {t('dashboard.totalPortfolio')}
             </Typography.Text>
             <Typography.Title level={4} style={{ margin: 0 }}>
               ${totalValue.toFixed(2)}
@@ -55,7 +57,7 @@ export default function Assets() {
         <Col xs={24} sm={12} md={8}>
           <Card>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              Total profit
+              {t('dashboard.totalProfit')}
             </Typography.Text>
             <Typography.Title
               level={4}

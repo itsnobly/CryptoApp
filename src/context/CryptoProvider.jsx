@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { CryptoContext } from './crypto-context';
-import { percentDifference } from '../utils';
 import { fetchCrypto } from '../api';
 
 export default function CryptoProvider({ children }) {
@@ -71,13 +70,6 @@ export default function CryptoProvider({ children }) {
 
   useEffect(() => {
     preloadData();
-    
-    // Auto-refresh prices every 60 seconds
-    const interval = setInterval(() => {
-      preloadData();
-    }, 60000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

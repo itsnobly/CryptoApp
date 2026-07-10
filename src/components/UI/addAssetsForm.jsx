@@ -6,15 +6,20 @@ import {
   Space,
   DatePicker,
   Typography,
+  Grid,
 } from 'antd';
 import { useState } from 'react';
 import { useCrypto } from '../../context/crypto-context';
+import { useLanguage } from '../../context/LanguageContext';
 import AssetAddedResult from './AssetAddedResult';
 
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 export default function AddAssetsForm({ onClose }) {
   const { crypto, addAsset } = useCrypto();
+  const { t } = useLanguage();
+  const screens = useBreakpoint();
 
   const [coin, setCoin] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -26,6 +31,10 @@ export default function AddAssetsForm({ onClose }) {
 
   const currentPrice = coin?.price || 0;
   const total = amount ? amount * (buyPrice || currentPrice) : 0;
+
+  // Responsive size based on screen width
+  const inputSize = screens.xs ? 'small' : 'middle';
+  const isMobile = screens.xs;
 
   const options = crypto.map((coinItem) => ({
     value: coinItem.id,
@@ -102,22 +111,23 @@ export default function AddAssetsForm({ onClose }) {
 
   return (
     <Form form={form} layout="vertical" onFinish={handleFinish}>
-      <Form.Item label="Coin">
+      <Form.Item label={t('addAsset.selectCoin')}>
         {!coin ? (
           <Select
-            placeholder="Select coin"
+            placeholder={t('addAsset.selectCoin')}
             options={options}
+            size={inputSize}
             onSelect={(value) => {
               const selected = crypto.find((item) => item.id === value);
               setCoin(selected);
             }}
             optionRender={(option) => (
-              <Space>
+              <Space size={isMobile ? 'small' : 'middle'}>
                 <img
                   src={option.data.icon}
                   alt={option.data.label}
-                  width={20}
-                  height={20}
+                  width={isMobile ? 16 : 20}
+                  height={isMobile ? 16 : 20}
                 />
                 {option.data.label}
               </Space>
@@ -126,13 +136,14 @@ export default function AddAssetsForm({ onClose }) {
         ) : (
           <Space
             align="center"
+            size={isMobile ? 'small' : 'middle'}
             style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Space>
-              <img src={coin.icon} alt={coin.name} width={30} height={30} />
-              <span>{coin.name}</span>
+            <Space size={isMobile ? 'small' : 'middle'}>
+              <img src={coin.icon} alt={coin.name} width={isMobile ? 24 : 30} height={isMobile ? 24 : 30} />
+              <span style={{ fontSize: isMobile ? '14px' : '16px' }}>{coin.name}</span>
             </Space>
-            <Button type="link" onClick={resetCoin}>
-              Change coin
+            <Button type="link" size={inputSize} onClick={resetCoin}>
+              {t('addAsset.changeCoin')}
             </Button>
           </Space>
         )}
@@ -141,32 +152,37 @@ export default function AddAssetsForm({ onClose }) {
       {coin && (
         <>
           <Form.Item
-            label="Amount"
+            label={t('addAsset.amount')}
             name="amount"
             rules={[
               {
                 required: true,
-                message: 'Amount is required',
+                message: t('addAsset.amountRequired'),
               },
               {
                 validator(_, value) {
                   if (!value) {
-                    return Promise.reject('Enter amount');
+                    return Promise.reject(t('addAsset.amountRequired'));
                   }
                   if (value <= 0) {
-                    return Promise.reject('Amount must be greater than 0');
+                    return Promise.reject(t('addAsset.amountPositive'));
                   }
                   return Promise.resolve();
                 },
               },
             ]}>
-            <InputNumber style={{ width: '100%' }} placeholder="Amount" />
+            <InputNumber 
+              style={{ width: '100%' }} 
+              placeholder={t('addAsset.amount')} 
+              size={inputSize}
+              controls={false}
+            />
           </Form.Item>
 
           <Form.Item
-            label="Buy price (optional)"
+            label={t('addAsset.buyPrice')}
             name="buyPrice"
-            tooltip="Если оставить пустым, будет использована текущая цена рынка"
+            tooltip={t('addAsset.buyPriceTooltip')}
             rules={[
               {
                 validator(_, value) {
@@ -174,7 +190,7 @@ export default function AddAssetsForm({ onClose }) {
                     return Promise.resolve();
                   }
                   if (value <= 0) {
-                    return Promise.reject('Price must be greater than 0');
+                    return Promise.reject(t('addAsset.pricePositive'));
                   }
                   return Promise.resolve();
                 },
@@ -183,40 +199,48 @@ export default function AddAssetsForm({ onClose }) {
             <InputNumber
               style={{ width: '100%' }}
               placeholder={coin ? coin.price.toFixed(2) : 'Market price'}
+              size={inputSize}
+              controls={false}
             />
           </Form.Item>
 
           <Form.Item
-            label="Date & Time"
+            label={t('addAsset.date')}
             name="date"
             rules={[
               {
                 required: true,
-                message: 'Date required',
+                message: t('addAsset.dateRequired'),
               },
             ]}>
-            <DatePicker showTime style={{ width: '100%' }} />
+            <DatePicker 
+              style={{ width: '100%' }} 
+              size={inputSize}
+              placement="bottomLeft"
+              getPopupContainer={(trigger) => trigger.parentElement}
+            />
           </Form.Item>
 
-          <Form.Item label="Total">
+          <Form.Item label={t('addAsset.total')}>
             <InputNumber
               disabled
               style={{ width: '100%' }}
               value={Number(total.toFixed(2))}
+              size={inputSize}
             />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-              Add
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }} size={inputSize}>
+              {t('addAsset.submit')}
             </Button>
           </Form.Item>
 
           {amount ? (
             <Text type="secondary">
               {buyPrice == null
-                ? `Если цена не введена, используется рынок: ${currentPrice.toFixed(2)}$`
-                : `Цена покупки: ${buyPrice?.toFixed(2) || currentPrice.toFixed(2)}$`}
+                ? `If price not entered, market price used: $${currentPrice.toFixed(2)}`
+                : `Buy price: $${buyPrice?.toFixed(2) || currentPrice.toFixed(2)}`}
             </Text>
           ) : null}
         </>

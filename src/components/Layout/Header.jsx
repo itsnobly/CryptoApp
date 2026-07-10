@@ -1,15 +1,17 @@
 import { Layout, Select, Space, Button, Drawer } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import { useCrypto } from '../../context/crypto-context';
+import { useLanguage } from '../../context/LanguageContext';
 
 import CoinInfoModal from '../UI/CoinInfoModal';
 import AddAssetsForm from '../UI/addAssetsForm';
 
 const { Header: AntHeader } = Layout;
 
-export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
+export default function Header({ colorBgContainer, isMobile, onMenuClick, onCollapseToggle, collapsed }) {
   const { crypto } = useCrypto();
+  const { t } = useLanguage();
 
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [selectOpen, setSelectOpen] = useState(false);
@@ -41,6 +43,14 @@ export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
       className="header"
       style={{ background: colorBgContainer }}>
       <div className="header-left">
+        {!isMobile && (
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={onCollapseToggle}
+            style={{ marginRight: 16 }}
+          />
+        )}
         {isMobile && (
           <Button
             type="text"
@@ -52,7 +62,7 @@ export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
         <Select
           className="coin-select"
           value={selectedCoin}
-          placeholder="Select coin"
+          placeholder={t('header.selectCoin')}
           open={selectOpen}
           onOpenChange={setSelectOpen}
           options={options}
@@ -92,16 +102,16 @@ export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
         />
       </div>
 
-      <Button 
-        type="primary" 
+      <Button
+        type="primary"
         onClick={() => setDrawer(true)}
-        style={{ 
+        style={{
           borderRadius: '8px',
           fontWeight: 500,
           height: '40px',
           padding: '0 20px',
         }}>
-        {isMobile ? 'Add' : 'Add Assets'}
+        {isMobile ? t('header.add') : t('header.addAssets')}
       </Button>
 
       <CoinInfoModal
@@ -113,9 +123,10 @@ export default function Header({ colorBgContainer, isMobile, onMenuClick }) {
 
       <Drawer
         size={isMobile ? 'default' : 500}
-        title="Add Assets"
+        title={t('addAsset.title')}
         open={drawer}
         destroyOnClose
+        closable={true}
         onClose={() => setDrawer(false)}>
         <AddAssetsForm onClose={() => setDrawer(false)} />
       </Drawer>

@@ -1,8 +1,10 @@
 import { Row, Col, Card, Statistic } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 
 export default function Cards() {
   const { assets } = useCrypto();
+  const { t } = useLanguage();
   const totalAmount = assets.reduce(
     (sum, asset) => sum + (asset.totalAmount || 0),
     0,
@@ -20,7 +22,7 @@ export default function Cards() {
       <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
-            title="Assets"
+            title={t('assets.title')}
             value={totalCount}
             styles={{ content: { fontSize: '24px' } }}
           />
@@ -29,7 +31,7 @@ export default function Cards() {
       <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
-            title="Total Value"
+            title={t('dashboard.totalPortfolio')}
             value={totalAmount}
             precision={2}
             prefix="$"
@@ -40,7 +42,7 @@ export default function Cards() {
       <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
-            title="Invested"
+            title={t('dashboard.invested')}
             value={totalInvested}
             precision={2}
             prefix="$"
@@ -51,7 +53,7 @@ export default function Cards() {
       <Col xs={24} sm={12} md={6}>
         <Card style={{ borderRadius: '12px' }}>
           <Statistic
-            title="ROI"
+            title={t('dashboard.roi')}
             value={roi}
             precision={2}
             suffix="%"

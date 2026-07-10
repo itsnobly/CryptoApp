@@ -1,11 +1,13 @@
 import { Row, Col, Card, Statistic, Typography, Table, Tag } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { formatCurrency, formatPercent } from '../../../utils';
 
 const { Title } = Typography;
 
 export default function Analytics() {
   const { assets, transactions } = useCrypto();
+  const { t } = useLanguage();
 
   const totalInvested = assets.reduce(
     (sum, asset) => sum + (asset.amount * asset.price || 0),
@@ -47,12 +49,12 @@ export default function Analytics() {
 
   const performanceColumns = [
     {
-      title: 'Coin',
+      title: t('common.coin'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'ROI',
+      title: t('dashboard.roi'),
       dataIndex: 'growPercent',
       key: 'growPercent',
       render: (value) => (
@@ -62,7 +64,7 @@ export default function Analytics() {
       ),
     },
     {
-      title: 'Profit',
+      title: t('common.profit'),
       dataIndex: 'totalProfit',
       key: 'totalProfit',
       render: (value) => formatCurrency(value),
@@ -81,10 +83,10 @@ export default function Analytics() {
   if (assets.length === 0) {
     return (
       <div className="page-container">
-        <Title level={3}>Analytics</Title>
+        <Title level={3}>{t('dashboard.analytics')}</Title>
         <Card>
           <p style={{ textAlign: 'center', color: '#999' }}>
-            Add assets to see analytics
+            {t('assets.noAssets')}
           </p>
         </Card>
       </div>
@@ -93,23 +95,23 @@ export default function Analytics() {
 
   return (
     <div className="page-container">
-      <Title level={3}>Analytics</Title>
+      <Title level={3}>{t('dashboard.analytics')}</Title>
       
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic title="Total Invested" value={totalInvested} precision={2} prefix="$" />
+            <Statistic title={t('dashboard.totalInvested')} value={totalInvested} precision={2} prefix="$" />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
-            <Statistic title="Current Value" value={totalValue} precision={2} prefix="$" />
+            <Statistic title={t('dashboard.currentValue')} value={totalValue} precision={2} prefix="$" />
           </Card>
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Realized Profit"
+              title={t('dashboard.realizedProfit')}
               value={realizedProfit}
               precision={2}
               prefix="$"
@@ -122,7 +124,7 @@ export default function Analytics() {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Unrealized Profit"
+              title={t('dashboard.unrealizedProfit')}
               value={unrealizedProfit}
               precision={2}
               prefix="$"
@@ -138,7 +140,7 @@ export default function Analytics() {
         <Col xs={24} sm={12}>
           <Card>
             <Statistic
-              title="Overall Profit"
+              title={t('dashboard.overallProfit')}
               value={overallProfit}
               precision={2}
               prefix="$"
@@ -151,7 +153,7 @@ export default function Analytics() {
         <Col xs={24} sm={12}>
           <Card>
             <Statistic
-              title="ROI"
+              title={t('dashboard.roi')}
               value={roi}
               precision={2}
               suffix="%"
@@ -165,7 +167,7 @@ export default function Analytics() {
 
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} md={12}>
-          <Card title="Best Performer">
+          <Card title={t('dashboard.bestPerformer')}>
             {bestPerformer ? (
               <div>
                 <Title level={4}>{bestPerformer.name}</Title>
@@ -179,12 +181,12 @@ export default function Analytics() {
                 />
               </div>
             ) : (
-              <p style={{ color: '#999' }}>No data</p>
+              <p style={{ color: '#999' }}>{t('common.loading')}</p>
             )}
           </Card>
         </Col>
         <Col xs={24} md={12}>
-          <Card title="Worst Performer">
+          <Card title={t('dashboard.worstPerformer')}>
             {worstPerformer ? (
               <div>
                 <Title level={4}>{worstPerformer.name}</Title>
@@ -198,13 +200,13 @@ export default function Analytics() {
                 />
               </div>
             ) : (
-              <p style={{ color: '#999' }}>No data</p>
+              <p style={{ color: '#999' }}>{t('common.loading')}</p>
             )}
           </Card>
         </Col>
       </Row>
 
-      <Card title="Performance by Asset">
+      <Card title={t('dashboard.performanceByAsset')}>
         <Table
           columns={performanceColumns}
           dataSource={performanceData}

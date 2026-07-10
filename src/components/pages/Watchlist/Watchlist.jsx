@@ -1,12 +1,14 @@
 import { Card, Table, Button, Typography, Input, Tag } from 'antd';
 import { StarOutlined, StarFilled, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { useState } from 'react';
 
 const { Title } = Typography;
 
 export default function Watchlist() {
   const { crypto } = useCrypto();
+  const { t } = useLanguage();
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem('cryptoWatchlist');
     return saved ? JSON.parse(saved) : [];
@@ -33,7 +35,7 @@ export default function Watchlist() {
 
   const columns = [
     {
-      title: 'Coin',
+      title: t('watchlist.coin'),
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
@@ -44,28 +46,28 @@ export default function Watchlist() {
       ),
     },
     {
-      title: 'Symbol',
+      title: t('watchlist.symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
     },
     {
-      title: 'Price',
+      title: t('watchlist.price'),
       dataIndex: 'price',
       key: 'price',
-      render: (value) => `$${value.toFixed(2)}`,
+      render: (value) => value ? `$${value.toFixed(2)}` : '-',
     },
     {
-      title: '24h Change',
+      title: t('watchlist.change24h'),
       dataIndex: 'priceChange1d',
       key: 'priceChange1d',
-      render: (value) => (
+      render: (value) => value !== null && value !== undefined ? (
         <Tag color={value >= 0 ? 'success' : 'error'}>
           {value >= 0 ? '+' : ''}{value.toFixed(2)}%
         </Tag>
-      ),
+      ) : '-',
     },
     {
-      title: 'Actions',
+      title: t('watchlist.addToWatchlist'),
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -81,7 +83,7 @@ export default function Watchlist() {
   const allCoinsColumns = [
     ...columns.slice(0, -1),
     {
-      title: 'Actions',
+      title: t('watchlist.addToWatchlist'),
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -96,12 +98,12 @@ export default function Watchlist() {
 
   return (
     <div className="page-container">
-      <Title level={3}>Watchlist</Title>
+      <Title level={3}>{t('watchlist.title')}</Title>
       
-      <Card title="Your Watchlist" style={{ marginBottom: 16 }}>
+      <Card title={t('watchlist.yourWatchlist')} style={{ marginBottom: 16 }}>
         {watchlistCoins.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
-            No coins in watchlist. Add coins from the list below.
+            {t('watchlist.noCoins')}
           </p>
         ) : (
           <Table
@@ -113,9 +115,9 @@ export default function Watchlist() {
         )}
       </Card>
 
-      <Card title="All Coins">
+      <Card title={t('watchlist.allCoins')}>
         <Input
-          placeholder="Search coins..."
+          placeholder={t('watchlist.searchCoins')}
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -128,7 +130,7 @@ export default function Watchlist() {
             pageSize: 10,
             showSizeChanger: true,
             pageSizeOptions: [10, 25, 50],
-            position: 'bottomCenter',
+            placement: 'bottomCenter',
           }}
           scroll={{ x: 600, y: 400 }}
           size="small"

@@ -9,12 +9,12 @@ const { Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 export default function AppLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [selectedPage, setSelectedPage] = useState('dashboard');
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const { loading } = useContext(CryptoContext);
   const screens = useBreakpoint();
-  const isMobile = !screens.lg;
+  const isMobile = screens.xs || screens.sm || screens.md;
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -38,7 +38,8 @@ export default function AppLayout() {
       collapsed={isMobile ? false : collapsed}
       selectedPage={selectedPage}
       onSelect={handlePageSelect}
-      setCollapsed={setCollapsed}
+      isMobile={isMobile}
+      onClose={() => setMobileDrawerOpen(false)}
     />
   );
 
@@ -46,21 +47,28 @@ export default function AppLayout() {
     <Layout className="app-layout">
       {!isMobile && (
         <Sider
-          breakpoint="lg"
-          collapsible
+          width={256}
+          collapsedWidth={80}
           collapsed={collapsed}
-          onBreakpoint={(broken) => setCollapsed(broken)}
-          trigger={null}
-          collapsedWidth={80}>
+          style={{
+            overflow: 'auto',
+            height: '100vh',
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            bottom: 0,
+          }}>
           {sidebarContent}
         </Sider>
       )}
 
-      <Layout>
+      <Layout style={{ marginLeft: !isMobile ? (collapsed ? 80 : 256) : 0 }}>
         <Header
           colorBgContainer={colorBgContainer}
           isMobile={isMobile}
           onMenuClick={() => setMobileDrawerOpen(true)}
+          onCollapseToggle={() => setCollapsed(!collapsed)}
+          collapsed={collapsed}
         />
 
         <Content

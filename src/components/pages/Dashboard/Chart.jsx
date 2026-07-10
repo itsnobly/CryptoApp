@@ -1,5 +1,6 @@
 import { Typography, Row, Col, Tooltip, theme } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { useState, useMemo } from 'react';
 
 const { Text, Title } = Typography;
@@ -41,6 +42,7 @@ function groupSegments(segments) {
 
 export default function Chart() {
   const { assets } = useCrypto();
+  const { t } = useLanguage();
   const [hoveredAsset, setHoveredAsset] = useState(null);
   const { token } = theme.useToken();
 
@@ -72,7 +74,7 @@ export default function Chart() {
   if (segments.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-        <Text type="secondary">No assets to display</Text>
+        <Text type="secondary">{t('assets.noAssets')}</Text>
       </div>
     );
   }
@@ -131,7 +133,7 @@ export default function Chart() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <Title level={4} style={{ margin: 0 }}>
-        Portfolio Breakdown
+        {t('dashboard.portfolioDistribution')}
       </Title>
 
       <Row gutter={[32, 24]} align="middle">

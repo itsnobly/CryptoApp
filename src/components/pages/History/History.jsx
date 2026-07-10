@@ -1,5 +1,6 @@
 import { Table, Typography, Tag, Input, Select, Empty, Card } from 'antd';
 import { useCrypto } from '../../../context/crypto-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -8,6 +9,7 @@ const { Title } = Typography;
 
 export default function History() {
   const { transactions } = useCrypto();
+  const { t } = useLanguage();
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState('all');
 
@@ -34,14 +36,14 @@ export default function History() {
 
   const columns = [
     {
-      title: 'Date',
+      title: t('history.date'),
       dataIndex: 'date',
       key: 'date',
       width: 150,
       sorter: (a, b) => new Date(a.date) - new Date(b.date),
     },
     {
-      title: 'Type',
+      title: t('history.type'),
       dataIndex: 'type',
       key: 'type',
       width: 80,
@@ -50,34 +52,34 @@ export default function History() {
       ),
     },
     {
-      title: 'Coin',
+      title: t('history.coin'),
       dataIndex: 'coin',
       key: 'coin',
       width: 120,
     },
     {
-      title: 'Amount',
+      title: t('history.amount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 100,
       render: (value, record) => `${value.toFixed(6)} ${record.coin}`,
     },
     {
-      title: 'Price',
+      title: t('history.price'),
       dataIndex: 'price',
       key: 'price',
       width: 100,
       render: (value) => `$${value.toFixed(2)}`,
     },
     {
-      title: 'Total',
+      title: t('history.total'),
       dataIndex: 'total',
       key: 'total',
       width: 100,
       render: (value) => `$${value.toFixed(2)}`,
     },
     {
-      title: 'Profit',
+      title: t('common.profit'),
       dataIndex: 'profit',
       key: 'profit',
       width: 100,
@@ -94,11 +96,11 @@ export default function History() {
 
   return (
     <div className="page-container">
-      <Title level={3}>Transaction History</Title>
+      <Title level={3}>{t('history.title')}</Title>
       {transactions.length === 0 ? (
         <Card>
           <Empty
-            description="No transactions yet. Add assets to see your transaction history."
+            description={t('history.noTransactions')}
             style={{ padding: '40px 0' }}
           />
         </Card>
@@ -106,7 +108,7 @@ export default function History() {
         <>
           <div style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Input
-              placeholder="Search transactions..."
+              placeholder={t('history.search')}
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -117,7 +119,7 @@ export default function History() {
               onChange={setFilterType}
               style={{ width: 120 }}
               options={[
-                { label: 'All', value: 'all' },
+                { label: t('history.all'), value: 'all' },
                 { label: 'BUY', value: 'BUY' },
                 { label: 'SELL', value: 'SELL' },
               ]}

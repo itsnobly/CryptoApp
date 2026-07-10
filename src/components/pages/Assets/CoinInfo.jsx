@@ -1,5 +1,6 @@
 import { useCrypto } from '../../../context/crypto-context';
 import { useSettings } from '../../../context/settings-context';
+import { useLanguage } from '../../../context/LanguageContext';
 import { Typography, Avatar } from 'antd';
 
 const { Title, Text } = Typography;
@@ -7,14 +8,15 @@ const { Title, Text } = Typography;
 export default function CoinInfo() {
   const { crypto } = useCrypto();
   const { showMarketPrices } = useSettings();
+  const { t } = useLanguage();
   const topCoins = crypto.slice(0, 5);
 
   if (!showMarketPrices) {
     return (
       <div>
-        <Title level={5}>Top coins</Title>
+        <Title level={5}>{t('common.topCoins')}</Title>
         <Text type="secondary">
-          Market prices are hidden. Enable in Settings.
+          {t('common.marketPricesHidden')}
         </Text>
       </div>
     );
@@ -22,7 +24,7 @@ export default function CoinInfo() {
 
   return (
     <div>
-      <Title level={5}>Top coins</Title>
+      <Title level={5}>{t('common.topCoins')}</Title>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {topCoins.map((coin) => (
           <div
