@@ -20,6 +20,12 @@ export default function Cards() {
       ? ((totalAmount - totalInvested) / totalInvested) * 100
       : 0;
 
+  const statContentStyle = {
+    fontSize: 'clamp(16px, 5vw, 24px)',
+    wordBreak: 'break-word',
+    whiteSpace: 'normal',
+  };
+
   return (
     <Row gutter={[12, 12]}>
       <Col xs={24} sm={12} md={6}>
@@ -27,7 +33,7 @@ export default function Cards() {
           <Statistic
             title={t('assets.title')}
             value={totalCount}
-            styles={{ content: { fontSize: '24px' } }}
+            styles={{ content: statContentStyle }}
           />
         </Card>
       </Col>
@@ -38,7 +44,7 @@ export default function Cards() {
             value={totalAmount}
             precision={2}
             prefix="$"
-            styles={{ content: { fontSize: '24px' } }}
+            styles={{ content: statContentStyle }}
           />
         </Card>
       </Col>
@@ -49,7 +55,7 @@ export default function Cards() {
             value={totalInvested}
             precision={2}
             prefix="$"
-            styles={{ content: { fontSize: '24px' } }}
+            styles={{ content: statContentStyle }}
           />
         </Card>
       </Col>
@@ -62,7 +68,7 @@ export default function Cards() {
             suffix="%"
             styles={{
               content: {
-                fontSize: '24px',
+                ...statContentStyle,
                 color: roi >= 0 ? '#3f8600' : '#cf1322',
               },
             }}

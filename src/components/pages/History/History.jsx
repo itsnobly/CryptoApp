@@ -48,7 +48,9 @@ export default function History() {
       key: 'type',
       width: 80,
       render: (type) => (
-        <Tag color={type === 'BUY' ? 'green' : 'red'}>{type}</Tag>
+        <Tag color={type === 'BUY' ? 'green' : 'red'}>
+          {type === 'BUY' ? t('history.buy') : t('history.sell')}
+        </Tag>
       ),
     },
     {
@@ -118,16 +120,16 @@ export default function History() {
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              style={{ maxWidth: 300 }}
+              style={{ maxWidth: 300, flex: '1 1 200px' }}
             />
             <Select
               value={filterType}
               onChange={setFilterType}
-              style={{ width: 120 }}
+              style={{ width: 160 }}
               options={[
                 { label: t('history.all'), value: 'all' },
-                { label: 'BUY', value: 'BUY' },
-                { label: 'SELL', value: 'SELL' },
+                { label: t('history.buy'), value: 'BUY' },
+                { label: t('history.sell'), value: 'SELL' },
               ]}
             />
           </div>

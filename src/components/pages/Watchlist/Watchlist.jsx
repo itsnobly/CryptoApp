@@ -49,11 +49,9 @@ export default function Watchlist() {
   const columns = [
     {
       title: t('watchlist.coin'),
-
       dataIndex: 'name',
-
       key: 'name',
-
+      width: 160,
       render: (text, record) => (
         <div
           style={{
@@ -62,7 +60,6 @@ export default function Watchlist() {
             gap: 8,
           }}>
           <img src={record.icon} alt={text} width={24} height={24} />
-
           <span>{text}</span>
         </div>
       ),
@@ -70,29 +67,24 @@ export default function Watchlist() {
 
     {
       title: t('watchlist.symbol'),
-
       dataIndex: 'symbol',
-
       key: 'symbol',
+      width: 90,
     },
 
     {
       title: t('watchlist.price'),
-
       dataIndex: 'price',
-
       key: 'price',
-
+      width: 110,
       render: (value) => (value ? formatMoney(value) : '-'),
     },
 
     {
       title: t('watchlist.change24h'),
-
       dataIndex: 'priceChange1d',
-
       key: 'priceChange1d',
-
+      width: 130,
       render: (value) =>
         value !== null && value !== undefined ? (
           <Tag color={value >= 0 ? 'success' : 'error'}>
@@ -105,10 +97,9 @@ export default function Watchlist() {
     },
 
     {
-      title: t('watchlist.addToWatchlist'),
-
+      title: '',
       key: 'actions',
-
+      width: 50,
       render: (_, record) => (
         <Button
           type="text"
@@ -150,6 +141,7 @@ export default function Watchlist() {
               key: coin.id,
             }))}
             pagination={false}
+            scroll={{ x: 540 }}
             size="small"
           />
         )}
@@ -181,10 +173,7 @@ export default function Watchlist() {
 
             placement: 'bottomCenter',
           }}
-          scroll={{
-            x: 600,
-            y: 400,
-          }}
+          scroll={{ x: 540 }}
           size="small"
         />
       </Card>

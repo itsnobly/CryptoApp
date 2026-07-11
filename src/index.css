@@ -137,6 +137,27 @@ body {
   max-height: 320px;
   overflow-y: auto;
   padding-right: 4px;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.chart-legend::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chart-legend::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chart-legend::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+}
+
+.chart-legend::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .chart-legend-item {

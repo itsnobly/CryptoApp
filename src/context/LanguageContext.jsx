@@ -20,6 +20,7 @@ const translations = {
     assets: {
       title: 'Assets',
       noAssets: 'No assets',
+      search: 'Search assets',
     },
 
     watchlist: {
@@ -165,8 +166,8 @@ const translations = {
     assets: {
       title: 'Активы',
       noAssets: 'Нет активов',
+      search: 'Поиск активов',
     },
-
     watchlist: {
       title: 'Избранные монеты',
       yourWatchlist: 'Ваш список монет',

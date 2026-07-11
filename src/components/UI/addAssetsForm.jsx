@@ -6,7 +6,6 @@ import {
   Space,
   DatePicker,
   Typography,
-  Grid,
 } from 'antd';
 import { useState } from 'react';
 import { useCrypto } from '../../context/crypto-context';
@@ -14,27 +13,25 @@ import { useLanguage } from '../../context/useLanguage';
 import AssetAddedResult from './AssetAddedResult';
 
 const { Text } = Typography;
-const { useBreakpoint } = Grid;
 
 export default function AddAssetsForm({ onClose }) {
   const { crypto, addAsset } = useCrypto();
   const { t } = useLanguage();
-  const screens = useBreakpoint();
 
   const [coin, setCoin] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [addedAsset, setAddedAsset] = useState(null);
 
   const [form] = Form.useForm();
+
   const amount = Form.useWatch('amount', form);
   const buyPrice = Form.useWatch('buyPrice', form);
 
   const currentPrice = coin?.price || 0;
+
   const total = amount ? amount * (buyPrice || currentPrice) : 0;
 
-  // Responsive size based on screen width
-  const inputSize = screens.xs ? 'small' : 'middle';
-  const isMobile = screens.xs;
+  const inputSize = 'large';
 
   const options = crypto.map((coinItem) => ({
     value: coinItem.id,
@@ -45,9 +42,13 @@ export default function AddAssetsForm({ onClose }) {
   const handleFinish = (values) => {
     const assetPrice = values.buyPrice || currentPrice;
     const assetAmount = values.amount;
+
     const assetTotal = assetAmount * assetPrice;
+
     const assetProfit = assetAmount * (currentPrice - assetPrice);
+
     const assetGrow = assetPrice < currentPrice;
+
     const growPercent =
       assetPrice > 0
         ? Number(((currentPrice - assetPrice) / assetPrice) * 100).toFixed(2)
@@ -80,6 +81,10 @@ export default function AddAssetsForm({ onClose }) {
 
     setAddedAsset(asset);
     setSubmitted(true);
+
+    if (onClose) {
+      onClose();
+    }
   };
 
   const resetCoin = () => {
@@ -117,12 +122,12 @@ export default function AddAssetsForm({ onClose }) {
               setCoin(selected);
             }}
             optionRender={(option) => (
-              <Space size={isMobile ? 'small' : 'middle'}>
+              <Space size="middle">
                 <img
                   src={option.data.icon}
                   alt={option.data.label}
-                  width={isMobile ? 16 : 20}
-                  height={isMobile ? 16 : 20}
+                  width={20}
+                  height={20}
                 />
                 {option.data.label}
               </Space>
@@ -131,19 +136,17 @@ export default function AddAssetsForm({ onClose }) {
         ) : (
           <Space
             align="center"
-            size={isMobile ? 'small' : 'middle'}
-            style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Space size={isMobile ? 'small' : 'middle'}>
-              <img
-                src={coin.icon}
-                alt={coin.name}
-                width={isMobile ? 24 : 30}
-                height={isMobile ? 24 : 30}
-              />
-              <span style={{ fontSize: isMobile ? '14px' : '16px' }}>
-                {coin.name}
-              </span>
+            size="middle"
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+            }}>
+            <Space size="middle">
+              <img src={coin.icon} alt={coin.name} width={30} height={30} />
+
+              <span style={{ fontSize: '16px' }}>{coin.name}</span>
             </Space>
+
             <Button type="link" size={inputSize} onClick={resetCoin}>
               {t('addAsset.changeCoin')}
             </Button>
@@ -166,9 +169,11 @@ export default function AddAssetsForm({ onClose }) {
                   if (!value) {
                     return Promise.reject(t('addAsset.amountRequired'));
                   }
+
                   if (value <= 0) {
                     return Promise.reject(t('addAsset.amountPositive'));
                   }
+
                   return Promise.resolve();
                 },
               },
@@ -178,8 +183,7 @@ export default function AddAssetsForm({ onClose }) {
               placeholder={t('addAsset.amount')}
               size={inputSize}
               controls={false}
-              inputMode="numeric"
-              pattern="[0-9]*"
+              inputMode="decimal"
             />
           </Form.Item>
 
@@ -193,20 +197,23 @@ export default function AddAssetsForm({ onClose }) {
                   if (value == null || value === '') {
                     return Promise.resolve();
                   }
+
                   if (value <= 0) {
                     return Promise.reject(t('addAsset.pricePositive'));
                   }
+
                   return Promise.resolve();
                 },
               },
             ]}>
             <InputNumber
               style={{ width: '100%' }}
-              placeholder={coin ? coin.price.toFixed(2) : 'Market price'}
+              placeholder={
+                coin ? coin.price.toFixed(2) : t('addAsset.marketPrice')
+              }
               size={inputSize}
               controls={false}
-              inputMode="numeric"
-              pattern="[0-9]*"
+              inputMode="decimal"
             />
           </Form.Item>
 
@@ -224,12 +231,6 @@ export default function AddAssetsForm({ onClose }) {
               size={inputSize}
               placement="bottomLeft"
               getPopupContainer={(trigger) => trigger.parentElement}
-              inputMode="none"
-              onKeyDown={(e) => {
-                if (e.key === '+' || e.key === '-') {
-                  e.preventDefault();
-                }
-              }}
               placeholder={t('addAsset.selectDate')}
             />
           </Form.Item>
@@ -256,8 +257,10 @@ export default function AddAssetsForm({ onClose }) {
           {amount ? (
             <Text type="secondary">
               {buyPrice == null
-                ? `If price not entered, market price used: $${currentPrice.toFixed(2)}`
-                : `Buy price: $${buyPrice?.toFixed(2) || currentPrice.toFixed(2)}`}
+                ? `${t('addAsset.priceUsed')}: $${currentPrice.toFixed(2)}`
+                : `${t('addAsset.buyPriceText')}: $${(
+                    buyPrice || currentPrice
+                  ).toFixed(2)}`}
             </Text>
           ) : null}
         </>
