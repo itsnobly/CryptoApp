@@ -117,6 +117,8 @@ const translations = {
       currentPrice: 'Current Price',
       coin: 'Coin',
       topCoins: 'Top Coins',
+      available: 'Available',
+      currentValue: 'Current Value',
     },
 
     addAsset: {
@@ -144,6 +146,16 @@ const translations = {
       added: 'Added',
       price: 'at price',
       again: 'Add Again',
+    },
+    sellAsset: {
+      submit: 'Sell',
+      sellAmount: 'Sell Amount',
+      sellPrice: 'Sell Price',
+      amountRequired: 'Amount is required',
+      amountRange: 'Amount must be between',
+      priceRequired: 'Price is required',
+      priceMin: 'Price must be at least 0.01',
+      dateRequired: 'Date is required',
     },
   },
 
@@ -262,8 +274,19 @@ const translations = {
       currentPrice: 'Текущая цена',
       coin: 'Монета',
       topCoins: 'Топ монет',
+      available: 'Доступно',
+      currentValue: 'Текущая стоимость',
     },
-
+    sellAsset: {
+      submit: 'Продать',
+      sellAmount: 'Количество для продажи',
+      sellPrice: 'Цена продажи',
+      amountRequired: 'Количество обязательно',
+      amountRange: 'Количество должно быть между',
+      priceRequired: 'Цена обязательна',
+      priceMin: 'Цена должна быть не менее 0.01',
+      dateRequired: 'Дата обязательна',
+    },
     addAsset: {
       title: 'Добавить актив',
       selectCoin: 'Выберите монету',
