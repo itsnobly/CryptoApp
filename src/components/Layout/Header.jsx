@@ -13,30 +13,21 @@ const { Header: AntHeader } = Layout;
 
 export default function Header({
   colorBgContainer,
-
   collapsed,
-
   setCollapsed,
-
   isMobile,
-
   openMobileMenu,
 }) {
   const { crypto } = useCrypto();
-
   const { t } = useLanguage();
 
   const [selectedCoin, setSelectedCoin] = useState(null);
-
   const [drawer, setDrawer] = useState(false);
-
   const [modal, setModal] = useState(false);
 
   const options = crypto.map((c) => ({
     label: c.name,
-
     value: c.id,
-
     icon: c.icon,
   }));
 
@@ -51,15 +42,15 @@ export default function Header({
         justifyContent: 'space-between',
         padding: isMobile ? '0 8px' : '0 16px',
         height: 64,
-        gap: 8,
+        gap: isMobile ? 6 : 8,
       }}>
       <div
         style={{
           display: 'flex',
-
           alignItems: 'center',
-
-          gap: 15,
+          gap: isMobile ? 6 : 15,
+          flex: '1 1 auto',
+          minWidth: 0,
         }}>
         <Button
           type="text"
@@ -80,27 +71,27 @@ export default function Header({
             }
           }}
           style={{
-            width: 60,
-            height: 60,
-            fontSize: 24,
+            width: isMobile ? 36 : 60,
+            height: isMobile ? 36 : 60,
+            fontSize: isMobile ? 18 : 24,
+            flexShrink: 0,
           }}
         />
 
         <Select
           style={{
-            width: 220,
+            width: isMobile ? '100%' : 220,
+            minWidth: 0,
           }}
           placeholder={t('header.selectCoin')}
           options={options}
           onChange={(value) => {
             setSelectedCoin(value);
-
             setModal(true);
           }}
           optionRender={(option) => (
             <Space>
               <img src={option.data.icon} width={20} height={20} />
-
               {option.data.label}
             </Space>
           )}
@@ -115,6 +106,7 @@ export default function Header({
           padding: isMobile ? '0 10px' : '0 16px',
           fontSize: isMobile ? 13 : 14,
           whiteSpace: 'nowrap',
+          flexShrink: 0,
         }}>
         {isMobile ? t('header.add') : t('header.addAssets')}
       </Button>
