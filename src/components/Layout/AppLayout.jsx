@@ -86,8 +86,8 @@ export default function AppLayout() {
             setMobileOpen(false);
           }}
           closable={false}
-          width={260}
           styles={{
+            wrapper: { width: 260 },
             body: {
               padding: 0,
               background: '#001529',
@@ -100,7 +100,6 @@ export default function AppLayout() {
             onClose={() => setMobileOpen(false)}
             onSelect={(page) => {
               setSelectedPage(page);
-
               setMobileOpen(false);
             }}
           />
