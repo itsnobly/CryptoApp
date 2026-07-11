@@ -51,6 +51,7 @@ export default function AppLayout() {
             collapsed={collapsed}
             selectedPage={selectedPage}
             onSelect={setSelectedPage}
+            onToggleCollapse={() => setCollapsed(!collapsed)}
           />
         </Sider>
       )}

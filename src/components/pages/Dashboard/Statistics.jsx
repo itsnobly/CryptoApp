@@ -10,6 +10,11 @@ export default function Statistics() {
   const positive = assets.filter((item) => item.grow).length;
   const negative = assets.length - positive;
 
+  const statContentStyle = {
+    fontSize: 'clamp(16px, 5vw, 24px)',
+    whiteSpace: 'nowrap',
+  };
+
   return (
     <Row gutter={[12, 12]}>
       <Col xs={12} sm={12}>
@@ -18,7 +23,8 @@ export default function Statistics() {
             title={t('dashboard.totalPortfolio')}
             value={total}
             precision={2}
-            suffix="$"
+            prefix="$"
+            styles={{ content: statContentStyle }}
           />
         </Card>
       </Col>
@@ -28,7 +34,8 @@ export default function Statistics() {
             title={t('dashboard.totalProfit')}
             value={profit}
             precision={2}
-            suffix="$"
+            prefix="$"
+            styles={{ content: statContentStyle }}
           />
         </Card>
       </Col>
